@@ -1,5 +1,11 @@
 package ca.glong.komodo.di
 
+import ca.glong.komodo.feature.alerts.AlertsModule
+import ca.glong.komodo.feature.auth.AuthModule
+import ca.glong.komodo.feature.dashboard.DashboardModule
+import ca.glong.komodo.feature.resources.ResourcesModule
+import dev.zacsweers.metro.MetroComponent
+import dev.zacsweers.metro.MetroComponentCreate
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -8,73 +14,45 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.KoinApplication
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Single
-import org.koin.dsl.KoinAppDeclaration
-import org.koin.plugin.module.dsl.startKoin
 
-fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
-    startKoin<KoinApp> {
-        appDeclaration()
+@MetroComponent
+interface AppComponent {
+    val httpClient: HttpClient
+
+    val authModule: AuthModule
+    val dashboardModule: DashboardModule
+    val resourcesModule: ResourcesModule
+    val alertsModule: AlertsModule
+
+    @MetroComponentCreate
+    interface Factory {
+        fun create(): AppComponent
     }
 }
 
-@KoinApplication(
-    modules = [SharedModule::class, NetworkModule::class]
-)
-class KoinApp
-
-@Module
-@ComponentScan("ca.glong.komodo")
-class SharedModule
-
-@Single
-class KtorLoggingLoggerAdapter : Logger {
-    private val logger = KotlinLogging.logger("HttpClient")
-
-    override fun log(message: String) {
-        logger.debug { message }
-    }
+fun createAppComponent(): AppComponent {
+    return MetroAppComponent.Factory().create()
 }
 
-@Module
-class NetworkModule {
-
-    @Single
-    fun provideHttpClient(): HttpClient {
-        return HttpClient {
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
-            }
-            install(Logging) {
-                logger = object : Logger {
-                    private val kLogger = KotlinLogging.logger("HttpClient")
-                    override fun log(message: String) {
-                        kLogger.debug { message }
-                    }
+// Provide HttpClient as a singleton
+fun provideHttpClient(): HttpClient {
+    return HttpClient {
+        install(ContentNegotiation) {
+            json(Json {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true
+            })
+        }
+        install(Logging) {
+            logger = object : Logger {
+                private val kLogger = KotlinLogging.logger("HttpClient")
+                override fun log(message: String) {
+                    kLogger.debug { message }
                 }
-                level = LogLevel.ALL
             }
-//            install(Auth) {
-//                bearer {
-//                    loadTokens {
-//                        val token = getKCrypt().getString("JWT_TOKEN")
-//                        if (!token.isNullOrBlank()) {
-//                            BearerTokens(token, token)
-//                        } else {
-//                            null
-//                        }
-//                    }
-//                }
-//            }
+            level = LogLevel.ALL
         }
     }
 }
-
 

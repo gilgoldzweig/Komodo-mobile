@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization) apply false
     alias(libs.plugins.composeHotReload) apply false
     alias(libs.plugins.koin.compiler) apply false
-//    alias(libs.plugins.mokkery) apply false
+    alias(libs.plugins.metro) apply false
+    alias(libs.plugins.mokkery) apply false
 }
 

@@ -5,11 +5,11 @@ plugins {
 group = "ca.glong.komodo.buildlogic"
 
 dependencies {
-    compileOnly(libs.android.gradlePlugin)
-    compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.compose.gradlePlugin)
-    compileOnly(libs.ksp.gradlePlugin)
-    compileOnly(libs.mokkery)
+    compileOnly(libs.compile.gradle.plugins.android)
+    compileOnly(libs.compile.gradle.plugins.compose)
+    compileOnly(libs.compile.gradle.plugins.kotlin)
+    compileOnly(libs.compile.gradle.plugins.ksp)
+    compileOnly(libs.compile.gradle.plugins.mokkery)
 }
 
 gradlePlugin {
@@ -33,6 +33,10 @@ gradlePlugin {
         register("koin") {
             id = "komodo.koin"
             implementationClass = "ca.glong.komodo.KoinConventionPlugin"
+        }
+        register("metro") {
+            id = "komodo.metro"
+            implementationClass = "ca.glong.komodo.MetroConventionPlugin"
         }
     }
 }

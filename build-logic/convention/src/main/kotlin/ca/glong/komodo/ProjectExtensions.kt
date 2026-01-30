@@ -25,12 +25,26 @@ internal fun VersionCatalog.requiredVersion(alias: String): String {
     error("Can't find version by alias `$alias` in versions catalog")
 }
 
+internal fun Project.versionInt(alias: String): Int =
+    versionString(alias).toInt()
+
+internal fun Project.versionString(alias: String): String =
+    libs.requiredVersion(alias)
+
 internal fun DependencyHandler.project(path: String): Dependency =
     project(mapOf("path" to path))
 
-context(project: Project, deps: KotlinDependencyHandler)
-internal fun bom(alias: String): Dependency? =
-    deps.implementation(
+context(project: Project)
+internal fun KotlinDependencyHandler.bom(alias: String): Dependency? =
+    implementation(
+        project.dependencies.platform(
+            project.libs.findLibrary(alias).get()
+        )
+    )
+
+context(project: Project)
+internal fun DependencyHandler.bom(alias: String): Dependency? =
+    add("implementation",
         project.dependencies.platform(
             project.libs.findLibrary(alias).get()
         )
@@ -40,9 +54,18 @@ context(project: Project)
 internal fun KotlinDependencyHandler.bundle(alias: String): Dependency? =
     implementation(project.libs.findBundle(alias).get())
 
+
+context(project: Project)
+internal fun DependencyHandler.bundle(alias: String): Dependency? =
+    add("implementation", project.libs.findBundle(alias).get())
+
 context(project: Project)
 internal fun KotlinDependencyHandler.implLib(alias: String): Dependency? =
     implementation(project.libs.findLibrary(alias).get())
+
+context(project: Project)
+internal fun DependencyHandler.implLib(alias: String): Dependency? =
+    add("implementation", project.libs.findLibrary(alias).get())
 
 internal fun DependencyHandler.debugImplementation(notation: Any): Dependency? =
     add("debugImplementation", notation)

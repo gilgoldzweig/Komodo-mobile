@@ -34,13 +34,10 @@ kotlin {
 
             // Koin
             implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
-            implementation(libs.koin.annotations)
+//            implementation(libs.koin.core)
+//            implementation(libs.koin.annotations)
 
-            // Settings
-            implementation(libs.multiplatform.settings)
-            implementation(libs.multiplatform.settings.coroutines)
-
+            implementation(libs.bundles.koin)
             // Coroutines
             implementation(libs.kotlinx.coroutines.core)
         }
