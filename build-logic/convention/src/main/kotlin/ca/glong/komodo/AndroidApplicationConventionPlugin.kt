@@ -13,10 +13,12 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<ApplicationExtension> {
+                namespace = "${Packages.KOMODO}.android.app"
+
                 compileSdk = versionInt(VersionNames.COMPILE_SDK)
                 defaultConfig {
                     minSdk = versionInt(VersionNames.MIN_SDK)
-                    targetSdk = versionInt("android-targetSdk")
+                    targetSdk = versionInt(VersionNames.TARGET_SDK)
                 }
                 
                 compileOptions {

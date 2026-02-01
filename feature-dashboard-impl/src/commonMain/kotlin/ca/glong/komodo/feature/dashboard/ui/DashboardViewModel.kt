@@ -1,14 +1,13 @@
 package ca.glong.komodo.feature.dashboard.ui
 
 import androidx.lifecycle.ViewModel
-import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koin.core.annotation.KoinViewModel
 
-@Inject
+@KoinViewModel
 class DashboardViewModel : ViewModel() {
     // ...existing code...
-}
     private val _stats = MutableStateFlow(DashboardStats())
     val stats = _stats.asStateFlow()
 

@@ -8,15 +8,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.glong.komodo.feature.resources.api.ResourceDetailKey
+import ca.glong.komodo.feature.resources.api.ResourceListKey
 import ca.glong.komodo.feature.resources.api.ResourceType
+import org.koin.compose.koinViewModel
 
 @Composable
 fun ResourceListScreen(
-    viewModel: ResourceListViewModel,
-    onResourceClick: (String, ResourceType) -> Unit,
-    onBackClick: () -> Unit
+    viewModel: ResourceListViewModel = koinViewModel()
 ) {
     val resources by viewModel.resources.collectAsState()
+    val navStack = remember { mutableStateListOf<Any>(ResourceListKey) }
+
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -30,7 +33,7 @@ fun ResourceListScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                TextButton(onClick = onBackClick) {
+                TextButton(onClick = { navStack.removeLastOrNull() }) {
                     Text("← Back")
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -50,7 +53,9 @@ fun ResourceListScreen(
             items(resources) { resource ->
                 ResourceCard(
                     resource = resource,
-                    onClick = { onResourceClick(resource.id, resource.type) }
+                    onClick = {
+                        navStack.add(ResourceDetailKey(resource.id, resource.type))
+                    }
                 )
             }
         }

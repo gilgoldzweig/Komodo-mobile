@@ -2,13 +2,13 @@ plugins {
     id("komodo.kotlin.multiplatform")
     id("komodo.android.library")
     id("komodo.compose")
-    id("komodo.metro")
+    id("komodo.koin")
 }
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.bundles.nav3)
+            implementation(projects.sharedInfra)
         }
     }
 }

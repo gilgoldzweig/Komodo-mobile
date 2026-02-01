@@ -11,6 +11,7 @@ class KoinConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply(Plugins.KOIN)
+//                apply(Plugins.KSP)
             }
 
             if (extensions.findByType<KotlinMultiplatformExtension>() != null) {
@@ -24,6 +25,13 @@ class KoinConventionPlugin : Plugin<Project> {
                     bundle("koin")
                 }
             }
+//            dependencies {
+//                add("kspCommonMainMetadata", lib("koin-compiler"))
+//                add("kspAndroid", lib("koin-compiler"))
+//                add("kspIosSimulatorArm64", lib("koin-compiler"))
+//                add("kspIosX64", lib("koin-compiler"))
+//                add("kspIosArm64", lib("koin-compiler"))
+//            }
         }
     }
 }

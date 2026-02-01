@@ -1,35 +1,42 @@
 package ca.glong.komodo.feature.auth.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.ui.Screen
-import ca.glong.komodo.feature.auth.ui.LoginScreen as LoginScreenUI
-import ca.glong.komodo.feature.auth.ui.LoginViewModel
-import ca.glong.komodo.feature.auth.ui.ServerSetupScreen as ServerSetupScreenUI
-import ca.glong.komodo.feature.auth.ui.ServerSetupViewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import ca.glong.komodo.feature.auth.api.LoginKey
+import ca.glong.komodo.feature.auth.api.ServerSetupKey
+import ca.glong.komodo.feature.auth.ui.LoginScreen
+import ca.glong.komodo.feature.auth.ui.ServerSetupScreen
+import ca.glong.komodo.shared.infra.NavContainer
+import ca.glong.komodo.shared.infra.NavKey
+import org.koin.core.annotation.Module
+import org.koin.dsl.*
 
-class ServerSetupScreen(
-    private val onSetupComplete: () -> Unit
-) : Screen {
-    @Composable
-    override fun Content() {
-        val viewModel = viewModel { ServerSetupViewModel() }
-        ServerSetupScreenUI(
-            viewModel = viewModel,
-            onSetupComplete = onSetupComplete
-        )
-    }
+
+val a = module {
 }
 
-class LoginScreen(
-    private val onLoginSuccess: () -> Unit
-) : Screen {
-    @Composable
-    override fun Content() {
-        val viewModel = viewModel { LoginViewModel() }
-        LoginScreenUI(
-            viewModel = viewModel,
-            onLoginSuccess = onLoginSuccess
-        )
+
+@Module
+class FeatureAuthNavModule {
+
+
+    fun provideNav() {
+      navigation {
+
+      }
+    }
+
+    override val keys: Set<NavKey> = setOf(
+        ServerSetupKey,
+        LoginKey
+    )
+
+    override fun EntryProviderScope<NavKey>.bind() {
+        entry<ServerSetupKey> {
+            ServerSetupScreen()
+        }
+
+        entry<LoginKey> {
+            LoginScreen()
+        }
     }
 }

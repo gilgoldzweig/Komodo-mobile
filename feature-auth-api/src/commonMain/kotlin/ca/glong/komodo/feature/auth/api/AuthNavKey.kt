@@ -1,6 +1,6 @@
 package ca.glong.komodo.feature.auth.api
 
-import androidx.navigation3.runtime.NavKey
+import ca.glong.komodo.shared.infra.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable

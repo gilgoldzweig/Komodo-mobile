@@ -1,14 +1,12 @@
 package ca.glong.komodo.feature.alerts.ui
 
 import androidx.lifecycle.ViewModel
-import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koin.core.annotation.KoinViewModel
 
-@Inject
+@KoinViewModel
 class AlertsViewModel : ViewModel() {
-    // ...existing code...
-}
     private val _alerts = MutableStateFlow<List<AlertItem>>(emptyList())
     val alerts = _alerts.asStateFlow()
 

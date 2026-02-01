@@ -1,11 +1,12 @@
 package ca.glong.komodo.feature.auth.ui
 
 import androidx.lifecycle.ViewModel
-import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.KoinViewModel
 
-@Inject
+@KoinViewModel
 class LoginViewModel : ViewModel() {
     private val _state = MutableStateFlow<LoginState>(LoginState.Idle)
     val state = _state.asStateFlow()

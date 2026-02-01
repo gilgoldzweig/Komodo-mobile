@@ -6,13 +6,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.glong.komodo.feature.auth.api.LoginKey
+import ca.glong.komodo.feature.auth.api.ServerSetupKey
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ServerSetupScreen(
-    viewModel: ServerSetupViewModel,
-    onSetupComplete: () -> Unit
+    viewModel: ServerSetupViewModel = koinViewModel()
 ) {
     val serverUrl by viewModel.serverUrl.collectAsState()
+    val navStack = remember { mutableStateListOf<Any>(ServerSetupKey) }
+
 
     Column(
         modifier = Modifier
@@ -41,7 +45,7 @@ fun ServerSetupScreen(
         Button(
             onClick = {
                 viewModel.saveServerConfig()
-                onSetupComplete()
+                navStack.add(LoginKey)
             },
             enabled = serverUrl.isNotBlank(),
             modifier = Modifier.fillMaxWidth()

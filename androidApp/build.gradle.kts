@@ -1,7 +1,8 @@
 plugins {
     id("komodo.android.application")
-    id("komodo.compose")
-    id("komodo.metro")
+    id("komodo.koin")
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeHotReload)
 }
 
 android {
@@ -25,11 +26,22 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":sharedUI"))
+    implementation(project(":core-domain"))
+    implementation(project(":core-network"))
+
+    // Feature modules
+    implementation(project(":feature-auth-impl"))
+    implementation(project(":feature-dashboard-impl"))
+    implementation(project(":feature-resources-impl"))
+    implementation(project(":feature-alerts-impl"))
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.nav3)
 
     implementation(libs.ktor.client.okhttp)
     implementation(libs.kotlinx.coroutines.android)
@@ -40,9 +52,6 @@ dependencies {
 
     // Logging
     implementation(libs.kotlin.logging)
-
-    // Navigation
-    implementation(libs.bundles.nav3)
 
     // Ktor
     implementation(libs.ktor.client.core)

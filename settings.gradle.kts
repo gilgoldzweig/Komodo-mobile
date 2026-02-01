@@ -13,16 +13,21 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Needed for org.jetbrains.androidx.navigation3 (Navigation 3 for KMP)
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
 includeBuild("build-logic")
-include(":core")
+include(":shared-infra")
+
+include(":sharedUI")
 include(":androidApp")
 
 // Core modules
 include(":core-domain")
 include(":core-network")
+include(":core-auth")
 
 // Feature: Auth
 include(":feature-auth-api")
@@ -39,4 +44,3 @@ include(":feature-resources-impl")
 // Feature: Alerts
 include(":feature-alerts-api")
 include(":feature-alerts-impl")
-

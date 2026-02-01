@@ -17,7 +17,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     it.minSdk = versionInt(VersionNames.MIN_SDK)
                     it.compileSdk = versionInt(VersionNames.COMPILE_SDK)
 
-                    val moduleName = path.split(":").drop(2).joinToString(".")
+                    val moduleName = project.name
                     val name = moduleName.ifEmpty { "app" }
                     it.namespace = "${Packages.KOMODO}.$name"
 

@@ -7,20 +7,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import ca.glong.komodo.feature.auth.api.LoginKey
+import ca.glong.komodo.feature.dashboard.api.DashboardKey
+import org.koin.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
-    onLoginSuccess: () -> Unit
+    viewModel: LoginViewModel = koinViewModel()
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     val state by viewModel.state.collectAsState()
+    val navStack = remember { mutableStateListOf<Any>(LoginKey) }
+
 
     LaunchedEffect(state) {
         if (state is LoginState.Success) {
-            onLoginSuccess()
+            navStack.add(DashboardKey)
         }
     }
 

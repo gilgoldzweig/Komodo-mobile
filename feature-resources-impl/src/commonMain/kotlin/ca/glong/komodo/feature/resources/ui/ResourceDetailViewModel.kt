@@ -2,17 +2,15 @@ package ca.glong.komodo.feature.resources.ui
 
 import androidx.lifecycle.ViewModel
 import ca.glong.komodo.feature.resources.api.ResourceType
-import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koin.core.annotation.KoinViewModel
 
-@Inject
+@KoinViewModel
 class ResourceDetailViewModel(
     private val resourceId: String,
     private val resourceType: ResourceType
 ) : ViewModel() {
-    // ...existing code...
-}
     private val _resource = MutableStateFlow<ResourceDetail?>(null)
     val resource = _resource.asStateFlow()
 

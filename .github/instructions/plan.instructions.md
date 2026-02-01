@@ -12,7 +12,7 @@ description: 'This raw markdown plan is designed to be ingested by an AI coding 
 
 1. **Strict TDD**: For every feature, you must write the unit test (behavior/logic) or widget/ui test **before** writing the implementation.
 2. **Modular Mandate**: Every feature must reside in two modules: `:feature:[name]:api` (Navigation Keys) and `:feature:[name]:impl` (Logic/UI).
-3. **DI Requirement**: Use Koin Annotations exclusively. Use `@ComponentScan` in each module.
+3. **DI Requirement**: Use Metro
 4. **Completion Rule**: A task/subtask is **only** complete once `./gradlew test` passes for the relevant modules.
 5. **No Knowledge Assumption**: Schemas for every model and API contract are provided below. Use these as the source of truth.
 

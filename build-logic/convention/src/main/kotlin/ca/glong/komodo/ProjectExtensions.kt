@@ -25,6 +25,18 @@ internal fun VersionCatalog.requiredVersion(alias: String): String {
     error("Can't find version by alias `$alias` in versions catalog")
 }
 
+internal fun VersionCatalog.bundle(name: String): Any {
+    val bundle = findBundle(name)
+    if (bundle.isPresent) return bundle.get()
+    error("Can't find bundle by name `$name` in versions catalog")
+}
+
+internal fun Project.lib(name: String): Any {
+    val library = libs.findLibrary(name)
+    if (library.isPresent) return library.get()
+    error("Can't find library by name `$name` in versions catalog")
+}
+
 internal fun Project.versionInt(alias: String): Int =
     versionString(alias).toInt()
 
@@ -52,12 +64,12 @@ internal fun DependencyHandler.bom(alias: String): Dependency? =
 
 context(project: Project)
 internal fun KotlinDependencyHandler.bundle(alias: String): Dependency? =
-    implementation(project.libs.findBundle(alias).get())
+    implementation(project.libs.bundle(alias))
 
 
 context(project: Project)
 internal fun DependencyHandler.bundle(alias: String): Dependency? =
-    add("implementation", project.libs.findBundle(alias).get())
+    add("implementation", project.libs.bundle(alias))
 
 context(project: Project)
 internal fun KotlinDependencyHandler.implLib(alias: String): Dependency? =

@@ -6,14 +6,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.glong.komodo.feature.alerts.api.AlertsKey
+import ca.glong.komodo.feature.dashboard.api.DashboardKey
+import ca.glong.komodo.feature.resources.api.ResourceListKey
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel,
-    onNavigateToResources: () -> Unit,
-    onNavigateToAlerts: () -> Unit
+    viewModel: DashboardViewModel = koinViewModel()
 ) {
     val stats by viewModel.stats.collectAsState()
+    val navStack = remember { mutableStateListOf<Any>(DashboardKey) }
 
     Column(
         modifier = Modifier
@@ -55,7 +58,7 @@ fun DashboardScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = onNavigateToResources,
+            onClick = { navStack.add(ResourceListKey) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("View Resources")
@@ -64,7 +67,7 @@ fun DashboardScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = onNavigateToAlerts,
+            onClick = { navStack.add(AlertsKey) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("View Alerts")

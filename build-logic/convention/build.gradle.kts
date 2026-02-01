@@ -10,6 +10,9 @@ dependencies {
     compileOnly(libs.compile.gradle.plugins.kotlin)
     compileOnly(libs.compile.gradle.plugins.ksp)
     compileOnly(libs.compile.gradle.plugins.mokkery)
+    compileOnly(libs.compile.gradle.plugins.metro)
+//    implementation(libs.detekt.gradle.plugin)
+    implementation(libs.detekt.compiler.plugin)
 }
 
 gradlePlugin {
@@ -37,6 +40,14 @@ gradlePlugin {
         register("metro") {
             id = "komodo.metro"
             implementationClass = "ca.glong.komodo.MetroConventionPlugin"
+        }
+        register("navigation") {
+            id = "komodo.nav"
+            implementationClass = "ca.glong.komodo.NavigationConventionPlugin"
+        }
+        register("detekt") {
+            id = "komodo.detekt"
+            implementationClass = "ca.glong.komodo.DetektConventionPlugin"
         }
     }
 }

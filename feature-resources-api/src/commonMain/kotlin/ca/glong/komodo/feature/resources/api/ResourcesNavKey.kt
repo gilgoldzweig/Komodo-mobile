@@ -18,4 +18,3 @@ enum class ResourceType {
     STACK,
     DEPLOYMENT
 }
-

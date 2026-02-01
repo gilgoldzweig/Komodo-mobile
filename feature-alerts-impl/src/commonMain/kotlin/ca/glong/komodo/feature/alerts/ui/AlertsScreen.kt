@@ -7,10 +7,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.koin.compose.koinViewModel
 
 @Composable
 fun AlertsScreen(
-    viewModel: AlertsViewModel,
+    viewModel: AlertsViewModel = koinViewModel(),
     onBackClick: () -> Unit
 ) {
     val alerts by viewModel.alerts.collectAsState()
