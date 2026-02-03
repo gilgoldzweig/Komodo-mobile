@@ -1,13 +1,15 @@
 import UIKit
 import SwiftUI
-import ComposeApp
+import KomodoKMP
 
-struct ComposeView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        MainViewControllerKt.MainViewController()
+struct ComposeView : UIViewControllerRepresentable {
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        <#code#>
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    func makeUIViewController(context: Context) -> some UIViewController {
+        return MainViewControllerKt.MainViewController()
+    }
 }
 
 struct ContentView: View {
@@ -16,6 +18,3 @@ struct ContentView: View {
             .ignoresSafeArea()
     }
 }
-
-
-

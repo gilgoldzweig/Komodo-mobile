@@ -7,7 +7,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.bundles.nav3)
+            implementation(projects.sharedInfra)
         }
     }
 }

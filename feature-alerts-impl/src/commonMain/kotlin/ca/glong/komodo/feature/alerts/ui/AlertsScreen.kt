@@ -7,13 +7,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.koin.compose.koinViewModel
+import ca.glong.komodo.ui.theme.KomodoTheme
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AlertsScreen(
-    viewModel: AlertsViewModel = koinViewModel(),
-    onBackClick: () -> Unit
+    viewModel: AlertsViewModel = koinViewModel()
 ) {
+    val nav = KomodoTheme.navigator
     val alerts by viewModel.alerts.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -21,7 +22,7 @@ fun AlertsScreen(
             Row(
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
-                TextButton(onClick = onBackClick) {
+                TextButton(onClick = nav::goBack) {
                     Text("← Back")
                 }
                 Spacer(modifier = Modifier.weight(1f))

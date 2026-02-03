@@ -9,7 +9,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import ca.glong.komodo.feature.auth.api.LoginKey
 import ca.glong.komodo.feature.dashboard.api.DashboardKey
-import org.koin.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(

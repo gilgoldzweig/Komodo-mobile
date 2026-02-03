@@ -20,9 +20,8 @@ class ComposeConventionPlugin : Plugin<Project> {
             if (extensions.findByType<KotlinMultiplatformExtension>() != null) {
                 multiplatformDependencies(commonMain = {
                     bundle("compose")
-                }, androidMain = {
-                    implLib("compose-uiTooling")
-                    implLib("compose-uiToolingPreview")
+//                    implLib("compose-uiTooling")
+//                    implLib("compose-uiToolingPreview")
                 })
             } else {
                 dependencies {
@@ -31,6 +30,9 @@ class ComposeConventionPlugin : Plugin<Project> {
                     implLib("compose-uiToolingPreview")
                 }
             }
+//            dependencies {
+//                add("androidRuntimeClasspath", lib("compose-uiTooling"))
+//            }
         }
     }
 }

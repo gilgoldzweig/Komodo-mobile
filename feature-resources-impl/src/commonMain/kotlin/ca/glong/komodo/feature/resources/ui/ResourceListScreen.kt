@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import ca.glong.komodo.feature.resources.api.ResourceDetailKey
 import ca.glong.komodo.feature.resources.api.ResourceListKey
 import ca.glong.komodo.feature.resources.api.ResourceType
-import org.koin.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ResourceListScreen(

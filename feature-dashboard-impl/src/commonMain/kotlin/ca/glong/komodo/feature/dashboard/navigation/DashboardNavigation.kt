@@ -1,18 +1,22 @@
 package ca.glong.komodo.feature.dashboard.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.navigation3.runtime.EntryProviderScope
 import ca.glong.komodo.feature.dashboard.api.DashboardKey
 import ca.glong.komodo.feature.dashboard.ui.DashboardScreen
-import ca.glong.komodo.feature.dashboard.ui.DashboardViewModel
-import dev.zacsweers.metrox.viewmodel.metroViewModel
+import org.koin.compose.navigation3.EntryProviderInstaller
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-/**
- * Dashboard feature navigation entries.
- */
-fun EntryProviderScope<Any>.featureDashboardEntries() {
-    entry<DashboardKey> {
-        val viewModel = metroViewModel<DashboardViewModel>()
-        DashboardScreen(viewModel = viewModel)
+@Module
+@ComponentScan("ca.glong.komodo.feature.dashboard")
+class DashboardModule {
+
+    @OptIn(KoinExperimentalAPI::class)
+    @Single
+    fun provideNav(): EntryProviderInstaller = {
+        entry<DashboardKey> {
+            DashboardScreen()
+        }
     }
 }

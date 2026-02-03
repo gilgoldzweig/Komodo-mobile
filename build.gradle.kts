@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization) apply false
     alias(libs.plugins.composeHotReload) apply false
     alias(libs.plugins.koin.compiler) apply false
+    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.metro) apply false
     alias(libs.plugins.mokkery) apply false
     alias(libs.plugins.detekt.compiler.plugin)
@@ -22,7 +23,7 @@ plugins {
 detekt {
     config.setFrom(files("$rootDir/codestyle/detekt/detekt.yml"))
     autoCorrect.set(project.hasProperty("ac"))
-    enableCompilerPlugin.set(true)
+    enableCompilerPlugin.set(false)
 }
 
 dependencies {

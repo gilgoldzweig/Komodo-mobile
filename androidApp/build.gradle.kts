@@ -1,8 +1,10 @@
+
 plugins {
     id("komodo.android.application")
     id("komodo.koin")
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
+    id("komodo.nav")
+    id("komodo.compose")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -26,29 +28,32 @@ android {
 }
 
 dependencies {
-    implementation(project(":sharedUI"))
-    implementation(project(":core-domain"))
-    implementation(project(":core-network"))
+    implementation(projects.theme)
+    implementation(projects.sharedInfra)
+    implementation(projects.komodoCore)
+    implementation(projects.coreDomain)
+    implementation(projects.coreNetwork)
+
 
     // Feature modules
-    implementation(project(":feature-auth-impl"))
-    implementation(project(":feature-dashboard-impl"))
-    implementation(project(":feature-resources-impl"))
-    implementation(project(":feature-alerts-impl"))
+    implementation(projects.featureAuthImpl)
+    implementation(projects.featureDashboardImpl)
+    implementation(projects.featureResourcesImpl)
+    implementation(projects.featureAlertsImpl)
+
+    // Compose
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.nav3)
 
-    implementation(libs.ktor.client.okhttp)
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.slf4j.simple)
+
 
     implementation(libs.androidx.lifecycle.viewmodelCompose)
     implementation(libs.androidx.lifecycle.runtimeCompose)
+    // Use the AndroidX lifecycle runtime KTX library for Android-specific code
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Logging
     implementation(libs.kotlin.logging)

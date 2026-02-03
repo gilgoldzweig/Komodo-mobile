@@ -17,7 +17,9 @@ To ensure 100% reliability and coverage, this implementation follows a strict TD
  - Use `expect/actual` where platform-specific implementations are required.
  - Use `kotlin.Result` for operations that may fail, returning specific error types.
  - Use `coroutines` for asynchronous operations and make sure IOS implementations are non-blocking.
+ - Use Koin & Koin annotations for dependency injection.
 ---
+
 
 ### Phase 1: Project Initialization & Architecture Design
 *Goal: Set up the KMP module using Komodo convention plugins and define core contracts.*
@@ -39,7 +41,7 @@ To ensure 100% reliability and coverage, this implementation follows a strict TD
     - [ ] Create `interface SecureStorage` with methods: `save(key, value)`, `read(key)`, `delete(key)`, `contains(key)`.
 - [ ] **Implement Android Storage (`androidMain`)**
     - [ ] **(TDD) Red:** Write a test mocking DataStore that expects a value save/read.
-    - [ ] Implement `SecureStorage` using `EncryptedDataStore` (Preferences).
+    - [ ] Implement `SecureStorage` using `EncryptedDataStore`.
     - [ ] Ensure the Master Key for DataStore is generated/retrieved using the Android Keystore System (`MasterKey.Builder`).
     - [ ] **(TDD) Green:** Verify tests pass.
 - [ ] **Implement iOS Storage (`iosMain`)**

@@ -20,8 +20,9 @@ dependencyResolutionManagement {
 
 includeBuild("build-logic")
 include(":shared-infra")
+include(":theme")
 
-include(":sharedUI")
+include(":komodo-core")
 include(":androidApp")
 
 // Core modules

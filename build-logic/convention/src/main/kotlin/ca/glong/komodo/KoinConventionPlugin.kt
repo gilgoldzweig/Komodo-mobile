@@ -18,6 +18,7 @@ class KoinConventionPlugin : Plugin<Project> {
                 multiplatformDependencies(commonMain = {
                     bom("koin-bom")
                     bundle("koin")
+
                 })
             } else {
                 dependencies {
@@ -25,13 +26,14 @@ class KoinConventionPlugin : Plugin<Project> {
                     bundle("koin")
                 }
             }
-//            dependencies {
+            dependencies {
+//                ksp("koin-compiler")
 //                add("kspCommonMainMetadata", lib("koin-compiler"))
 //                add("kspAndroid", lib("koin-compiler"))
 //                add("kspIosSimulatorArm64", lib("koin-compiler"))
 //                add("kspIosX64", lib("koin-compiler"))
 //                add("kspIosArm64", lib("koin-compiler"))
-//            }
+            }
         }
     }
 }

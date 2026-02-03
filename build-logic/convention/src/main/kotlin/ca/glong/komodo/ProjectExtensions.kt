@@ -68,8 +68,14 @@ internal fun KotlinDependencyHandler.bundle(alias: String): Dependency? =
 
 
 context(project: Project)
+internal fun DependencyHandler.ksp(alias: String): Dependency? =
+    add("ksp", project.lib(alias))
+
+
+context(project: Project)
 internal fun DependencyHandler.bundle(alias: String): Dependency? =
     add("implementation", project.libs.bundle(alias))
+
 
 context(project: Project)
 internal fun KotlinDependencyHandler.implLib(alias: String): Dependency? =

@@ -3,6 +3,7 @@ plugins {
     id("komodo.android.library")
     id("komodo.compose")
     id("komodo.koin")
+    id("komodo.nav")
 }
 
 kotlin {
@@ -10,13 +11,11 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.coreDomain)
             implementation(projects.coreNetwork)
-            implementation(projects.featureDashboardApi)
+            api(projects.featureDashboardApi)
             implementation(projects.featureResourcesApi)
             implementation(projects.featureAlertsApi)
-            implementation(projects.sharedUI)
+            implementation(projects.sharedInfra)
 
-            // Navigation 3
-            implementation(libs.bundles.nav3)
 
             // Coroutines
             implementation(libs.kotlinx.coroutines.core)

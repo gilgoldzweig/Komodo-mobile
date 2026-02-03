@@ -1,42 +1,31 @@
 package ca.glong.komodo.feature.auth.navigation
 
-import androidx.navigation3.runtime.EntryProviderScope
 import ca.glong.komodo.feature.auth.api.LoginKey
 import ca.glong.komodo.feature.auth.api.ServerSetupKey
 import ca.glong.komodo.feature.auth.ui.LoginScreen
 import ca.glong.komodo.feature.auth.ui.ServerSetupScreen
-import ca.glong.komodo.shared.infra.NavContainer
-import ca.glong.komodo.shared.infra.NavKey
+import org.koin.compose.navigation3.EntryProviderInstaller
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.Module
-import org.koin.dsl.*
-
-
-val a = module {
-}
-
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
 @Module
-class FeatureAuthNavModule {
+@ComponentScan("ca.glong.komodo.feature.auth")
+@Configuration
+class AuthModule {
 
-
-    fun provideNav() {
-      navigation {
-
-      }
-    }
-
-    override val keys: Set<NavKey> = setOf(
-        ServerSetupKey,
-        LoginKey
-    )
-
-    override fun EntryProviderScope<NavKey>.bind() {
-        entry<ServerSetupKey> {
-            ServerSetupScreen()
-        }
-
+    @OptIn(KoinExperimentalAPI::class)
+    @Single
+    @Named("AuthNavEntryProvider")
+    fun provideNav(): EntryProviderInstaller = {
         entry<LoginKey> {
             LoginScreen()
+        }
+        entry<ServerSetupKey> {
+            ServerSetupScreen()
         }
     }
 }
