@@ -5,7 +5,7 @@ plugins {
 group = "ca.glong.komodo.buildlogic"
 
 dependencies {
-    compileOnly(libs.compile.gradle.plugins.android)
+    implementation(libs.compile.gradle.plugins.android)
     compileOnly(libs.compile.gradle.plugins.compose)
     compileOnly(libs.compile.gradle.plugins.kotlin)
     compileOnly(libs.compile.gradle.plugins.ksp)

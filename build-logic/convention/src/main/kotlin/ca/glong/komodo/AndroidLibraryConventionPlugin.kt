@@ -1,27 +1,48 @@
 package ca.glong.komodo
 
-import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.creating
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.getting
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.getValue
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
+            val moduleName = project.name
             with(pluginManager) {
-                apply(Plugins.MULTIPLATFORM_LIBRARY)
+                apply("com.android.kotlin.multiplatform.library")
+
+            }
+            extensions.configure<KotlinMultiplatformExtension>() {
+
+                sourceSets {
+                    val androidHostTest by creating
+                    androidHostTest.dependencies {
+                        bundle("common-test")
+                    }
+                }
+
+                (this as ExtensionAware).extensions.configure<KotlinMultiplatformAndroidLibraryExtension> {
+                    minSdk = versionInt(VersionNames.MIN_SDK)
+                    compileSdk = versionInt(VersionNames.COMPILE_SDK)
+                    namespace = "${Packages.KOMODO}.$moduleName"
+
+                    withHostTest { }
+                    withDeviceTest {
+                        instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                    }
+                }
             }
 
-            extensions.configure<KotlinMultiplatformAndroidComponentsExtension> {
-                finalizeDsl {
-                    it.minSdk = versionInt(VersionNames.MIN_SDK)
-                    it.compileSdk = versionInt(VersionNames.COMPILE_SDK)
-
-                    val moduleName = project.name
-                    val name = moduleName.ifEmpty { "app" }
-                    it.namespace = "${Packages.KOMODO}.$name"
-
-                }
+            dependencies {
+                add("androidRuntimeClasspath", "org.jetbrains.compose.ui:ui-tooling:1.10.0")
             }
         }
     }

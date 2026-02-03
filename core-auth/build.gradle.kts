@@ -1,11 +1,14 @@
 plugins {
     id("komodo.kotlin.multiplatform")
     id("komodo.android.library")
+//    alias(libs.plugins.android.kotlin.multiplatform.library)
 }
 
 kotlin {
 
+
     sourceSets {
+
         commonMain.dependencies {
             // Coroutines
             implementation(libs.kotlinx.coroutines.core)
@@ -20,11 +23,15 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
         }
 
-        androidUnitTest.configure {
-            dependencies {
-                implementation(libs.mockk)
-                implementation(libs.kotlinx.coroutines.test)
-            }
+        commonTest.dependencies {
+            implementation(libs.bundles.common.test)
+
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.bundles.common.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }

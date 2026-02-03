@@ -16,7 +16,7 @@ kotlin = "2.3.0"
 kotlin-logging = "7.0.14"
 material3 = "1.11.0-alpha02"
 slf4j = "2.0.17"
-mockk = "1.14.9"
+turbine = "1.2.1"
 ksp = "2.3.5"
 
 detekt = "2.0.0-alpha.2"
@@ -46,10 +46,14 @@ cryptography = "0.5.0"
 mokkery = "3.1.1"
 
 metro = "0.10.2"
+junitVersion = "4.12"
 
 [libraries]
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-annotations = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
+
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -149,6 +153,7 @@ detekt-formatting = { module = "dev.detekt:detekt-formatting", version.ref = "de
 detekt-compose = { module = "ru.kode:detekt-rules-compose", version.ref = "detekt-compose-rules" }
 detekt-gradle-plugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 detekt-compiler-plugin = { module = "dev.detekt:detekt-compiler-plugin", version.ref = "detekt" }
+junit-junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 
 [plugins]
 cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
@@ -206,5 +211,8 @@ ktor = [
 
 common-test = [
     "kotlin-test",
-#    "koin-test"
+#    "koin-test",
+    "turbine",
+    "kotlin-test-annotations",
+    "kotlinx-coroutines-test"
 ]

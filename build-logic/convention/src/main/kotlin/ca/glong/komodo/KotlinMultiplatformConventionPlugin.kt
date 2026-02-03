@@ -3,10 +3,9 @@ package ca.glong.komodo
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.findByType
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.gradle.kotlin.dsl.creating
+import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftexport.SwiftExportExtension
 
 class KotlinMultiplatformConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -18,11 +17,13 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<KotlinMultiplatformExtension> {
-                applyDefaultHierarchyTemplate()
+
                 iosArm64()
                 iosSimulatorArm64()
 
+                jvmToolchain(21)
                 sourceSets.apply {
+
                     commonMain.dependencies {
                         implLib("kotlinx-serialization-json")
                         implLib("kotlin-logging")
@@ -32,7 +33,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                         bundle("common-test")
                     }
                 }
-                
+
                 compilerOptions {
                     freeCompilerArgs.add("-Xskip-prerelease-check")
                 }
