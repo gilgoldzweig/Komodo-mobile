@@ -56,7 +56,8 @@ internal fun KotlinDependencyHandler.bom(alias: String): Dependency? =
 
 context(project: Project)
 internal fun DependencyHandler.bom(alias: String): Dependency? =
-    add("implementation",
+    add(
+        "implementation",
         project.dependencies.platform(
             project.libs.findLibrary(alias).get()
         )
@@ -96,16 +97,35 @@ fun Project.multiplatformDependencies(
     androidUnitTest: DepsHandler = {},
     iosMain: DepsHandler = {},
     iosTest: DepsHandler = {},
-    commonTest: DepsHandler = {}
+    commonTest: DepsHandler = {},
+    all: DepsHandler = {}
 ) {
     extensions.configure<KotlinMultiplatformExtension> {
         sourceSets.apply {
-            this.commonMain.dependencies(commonMain)
-            this.commonTest.dependencies(commonTest)
-            this.androidMain.dependencies(androidMain)
-            this.androidUnitTest.dependencies(androidUnitTest)
-            this.iosMain.dependencies(iosMain)
-            this.iosTest.dependencies(iosTest)
+            this.commonMain.dependencies {
+                commonMain()
+                all()
+            }
+            this.commonTest.dependencies {
+                commonTest()
+                all()
+            }
+            this.androidMain.dependencies {
+                androidMain()
+                all()
+            }
+            this.androidUnitTest.dependencies {
+                androidUnitTest()
+                all()
+            }
+            this.iosMain.dependencies {
+                iosMain()
+                all()
+            }
+            this.iosTest.dependencies {
+                iosTest()
+                all()
+            }
         }
     }
 }

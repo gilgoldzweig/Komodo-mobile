@@ -14,36 +14,36 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with(target) {
-            val moduleName = project.name
-            with(pluginManager) {
-                apply("com.android.kotlin.multiplatform.library")
-
-            }
-            extensions.configure<KotlinMultiplatformExtension>() {
-
-                sourceSets {
-                    val androidHostTest by creating
-                    androidHostTest.dependencies {
-                        bundle("common-test")
-                    }
-                }
-
-                (this as ExtensionAware).extensions.configure<KotlinMultiplatformAndroidLibraryExtension> {
-                    minSdk = versionInt(VersionNames.MIN_SDK)
-                    compileSdk = versionInt(VersionNames.COMPILE_SDK)
-                    namespace = "${Packages.KOMODO}.$moduleName"
-
-                    withHostTest { }
-                    withDeviceTest {
-                        instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                    }
-                }
-            }
-
-            dependencies {
-                add("androidRuntimeClasspath", "org.jetbrains.compose.ui:ui-tooling:1.10.0")
-            }
-        }
+//        with(target) {
+//            val moduleName = project.name
+//            with(pluginManager) {
+//                apply("com.android.kotlin.multiplatform.library")
+//
+//            }
+//            extensions.configure<KotlinMultiplatformExtension>() {
+//
+//                sourceSets {
+//                    val androidHostTest by creating
+//                    androidHostTest.dependencies {
+//                        bundle("common-test")
+//                    }
+//                }
+//
+//                (this as ExtensionAware).extensions.configure<KotlinMultiplatformAndroidLibraryExtension> {
+//                    minSdk = versionInt(VersionNames.MIN_SDK)
+//                    compileSdk = versionInt(VersionNames.COMPILE_SDK)
+//                    namespace = "${Packages.KOMODO}.$moduleName"
+//
+//                    withHostTest { }
+//                    withDeviceTest {
+//                        instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//                    }
+//                }
+//            }
+//
+//            dependencies {
+//                add("androidRuntimeClasspath", "org.jetbrains.compose.ui:ui-tooling:1.10.0")
+//            }
+//        }
     }
 }
