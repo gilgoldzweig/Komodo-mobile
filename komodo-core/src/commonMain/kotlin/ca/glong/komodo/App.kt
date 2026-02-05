@@ -7,7 +7,6 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import ca.glong.komodo.navigation.LauncherKey
-import ca.glong.komodo.navigation.NavigationTestKey
 import ca.glong.komodo.shared.infra.navigation.Navigator
 import ca.glong.komodo.ui.theme.KomodoTheme
 import kotlinx.serialization.modules.SerializersModule
@@ -21,7 +20,8 @@ import org.koin.core.annotation.KoinExperimentalAPI
 fun App(
     serializersModule: SerializersModule = koinInject(),
     navigator: Navigator = koinInject(),
-    entryProvider: EntryProvider<NavKey> = koinEntryProvider()) {
+    entryProvider: EntryProvider<NavKey> = koinEntryProvider()
+) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
             this.serializersModule = serializersModule

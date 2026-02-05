@@ -8,7 +8,6 @@ import ca.glong.komodo.feature.alerts.api.AlertsKey
 import ca.glong.komodo.feature.auth.api.LoginKey
 import ca.glong.komodo.feature.dashboard.api.DashboardKey
 import ca.glong.komodo.feature.resources.api.ResourceListKey
-import ca.glong.komodo.shared.infra.navigation.LocalNavigator
 import ca.glong.komodo.shared.infra.navigation.Navigator
 import org.koin.compose.koinInject
 
@@ -16,7 +15,6 @@ import org.koin.compose.koinInject
 fun NavigationTestScreen(
     navigator: Navigator = koinInject()
 ) {
-
     Column {
         Button(onClick = { navigator.goTo(AlertsKey) }) {
             Text("Go to Alerts")

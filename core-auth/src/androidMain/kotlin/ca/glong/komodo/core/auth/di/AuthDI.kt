@@ -6,3 +6,6 @@ import org.koin.core.annotation.Module
 @Module
 @ComponentScan("ca.glong.komodo.core.auth")
 actual class AuthDI
+
+fun a() {
+}

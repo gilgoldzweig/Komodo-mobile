@@ -1,9 +1,10 @@
 plugins {
-    id("komodo.kotlin.multiplatform")
+    id("komodo.multiplatform")
     id("komodo.android.library")
     id("komodo.compose")
     id("komodo.koin")
     id("komodo.nav")
+    id("komodo.detekt")
 }
 
 kotlin {

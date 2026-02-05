@@ -11,15 +11,10 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.set
 import kotlinx.cinterop.value
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.CPointed
 import org.koin.core.annotation.Single
-import platform.CoreFoundation.CFAllocatorRef
 import platform.CoreFoundation.CFDictionaryCreate
-import platform.CoreFoundation.CFDictionaryRef
-import platform.CoreFoundation.CFTypeRef
-import platform.CoreFoundation.CFTypeRefVar
 import platform.CoreFoundation.CFRelease
+import platform.CoreFoundation.CFTypeRefVar
 import platform.CoreFoundation.kCFAllocatorDefault
 import platform.CoreFoundation.kCFBooleanTrue
 import platform.CoreFoundation.kCFTypeDictionaryKeyCallBacks
@@ -34,6 +29,11 @@ import platform.Security.SecItemAdd
 import platform.Security.SecItemCopyMatching
 import platform.Security.SecItemDelete
 import platform.Security.SecItemUpdate
+import platform.Security.errSecDuplicateItem
+import platform.Security.errSecItemNotFound
+import platform.Security.errSecSuccess
+import platform.Security.kSecAttrAccessible
+import platform.Security.kSecAttrAccessibleAfterFirstUnlock
 import platform.Security.kSecAttrAccount
 import platform.Security.kSecAttrService
 import platform.Security.kSecClass
@@ -42,12 +42,6 @@ import platform.Security.kSecMatchLimit
 import platform.Security.kSecMatchLimitOne
 import platform.Security.kSecReturnData
 import platform.Security.kSecValueData
-import platform.Security.errSecSuccess
-import platform.Security.errSecItemNotFound
-import platform.Security.errSecDuplicateItem
-
-import platform.Security.kSecAttrAccessible
-import platform.Security.kSecAttrAccessibleAfterFirstUnlock
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 @Single

@@ -6,7 +6,6 @@ import ca.glong.komodo.data.dto.JwtResponse
 import ca.glong.komodo.data.dto.LoginLocalUserParams
 import ca.glong.komodo.data.dto.RpcRequest
 import ca.glong.komodo.domain.repository.AuthRepository
-import ca.glong.komodo.domain.repository.SettingsRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

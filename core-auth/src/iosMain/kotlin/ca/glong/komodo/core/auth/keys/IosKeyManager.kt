@@ -283,7 +283,9 @@ class IosKeyManager : KeyManager {
                              val errorDesc = if (errorRef != null) {
                                 val desc = CFBridgingRelease(CFErrorCopyDescription(errorRef)) as? String
                                 desc ?: "Unknown error"
-                             } else "Unknown error"
+                             } else {
+                                 "Unknown error"
+                             }
                              throw AuthError.KeyStoreError("Signing failed: $errorDesc")
                         }
                         
@@ -300,7 +302,6 @@ class IosKeyManager : KeyManager {
                              }
                         }
                         bytes
-                        
                     } finally {
                         CFRelease(result.value)
                     }

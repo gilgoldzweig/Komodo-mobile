@@ -4,27 +4,6 @@ plugins {
     id("komodo.koin")
     id("komodo.nav")
     id("komodo.compose")
-    alias(libs.plugins.ksp)
-}
-
-android {
-    namespace = "ca.glong.komodo.android"
-
-    defaultConfig {
-        applicationId = "ca.glong.komodo"
-        versionCode = 1
-        versionName = "1.0"
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
@@ -33,7 +12,6 @@ dependencies {
     implementation(projects.komodoCore)
     implementation(projects.coreDomain)
     implementation(projects.coreNetwork)
-
 
     // Feature modules
     implementation(projects.featureAuthImpl)
@@ -47,8 +25,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)
-
-
 
     implementation(libs.androidx.lifecycle.viewmodelCompose)
     implementation(libs.androidx.lifecycle.runtimeCompose)

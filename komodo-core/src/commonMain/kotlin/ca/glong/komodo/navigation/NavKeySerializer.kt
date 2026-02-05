@@ -5,7 +5,6 @@ import ca.glong.komodo.feature.alerts.api.AlertsKey
 import ca.glong.komodo.feature.auth.api.LoginKey
 import ca.glong.komodo.feature.auth.api.ServerSetupKey
 import ca.glong.komodo.feature.dashboard.api.DashboardKey
-import ca.glong.komodo.feature.dashboard.navigation.DashboardModule
 import ca.glong.komodo.feature.resources.api.ResourceDetailKey
 import ca.glong.komodo.feature.resources.api.ResourceListKey
 import ca.glong.komodo.ui.LauncherScreen
@@ -55,6 +54,4 @@ class MainNavigationModule {
     @Single
     fun navKeySerializer(serializersModule: SerializersModule): KSerializer<NavKey> =
         serializersModule.serializer()
-
-
 }

@@ -1,6 +1,5 @@
 package ca.glong.komodo.core.auth.storage
 
-import ca.glong.komodo.core.auth.error.AuthError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test

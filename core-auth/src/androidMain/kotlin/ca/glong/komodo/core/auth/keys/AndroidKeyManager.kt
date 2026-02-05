@@ -5,6 +5,7 @@ import android.security.keystore.KeyProperties
 import android.security.keystore.KeyProperties.BLOCK_MODE_GCM
 import android.security.keystore.KeyProperties.ENCRYPTION_PADDING_NONE
 import android.security.keystore.KeyProperties.KEY_ALGORITHM_AES
+import android.security.keystore.KeyProperties.PURPOSE_DECRYPT
 import android.security.keystore.KeyProperties.PURPOSE_ENCRYPT
 import ca.glong.komodo.core.auth.error.AuthError
 import java.security.KeyPairGenerator
@@ -14,7 +15,6 @@ import java.security.spec.ECGenParameterSpec
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
-import javax.crypto.spec.GCMParameterSpec
 
 class AndroidKeyManager : KeyManager {
 
@@ -57,7 +57,6 @@ class AndroidKeyManager : KeyManager {
 
             keyPairGenerator.initialize(parameterSpec)
             keyPairGenerator.generateKeyPair()
-
         }
     }
 
@@ -84,6 +83,13 @@ class AndroidKeyManager : KeyManager {
         keyStore.containsAlias(alias)
     }
 
+    suspend fun encryptData(
+        alias: String,
+        data: ByteArray
+    ): Result<Pair<ByteArray, ByteArray>> {
+        return Result.success(encryptData(alias, data.toString(charset)))
+    }
+
     fun encryptData(keyAlias: String, text: String): Pair<ByteArray, ByteArray> {
         val secretKey = generateSecretKey(keyAlias)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
@@ -92,13 +98,20 @@ class AndroidKeyManager : KeyManager {
         return Pair(iv, encryptedData)
     }
 
-    fun decryptData(keyAlias: String, iv: ByteArray, encryptedData: ByteArray): String {
-        val secretKey = getSecretKey(keyAlias)
-        val gcmParameterSpec = GCMParameterSpec(128, iv)
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec)
-        return cipher.doFinal(encryptedData).toString(charset)
-    }
+//    fun decryptData(keyAlias: String, iv: ByteArray, encryptedData: ByteArray): String {
+//        val secretKey = getSecretKey(keyAlias)
+//        val gcmParameterSpec = GCMParameterSpec(128, iv)
+//        cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec)
+//        return cipher.doFinal(encryptedData).toString(charset)
+//    }
 
+    suspend fun decryptData(
+        alias: String,
+        iv: ByteArray,
+        encryptedData: ByteArray
+    ): Result<ByteArray> {
+        return Result.success(ByteArray(2))
+    }
     private fun generateSecretKey(keyAlias: String): SecretKey {
         val keyEntry = keyStore.getEntry(keyAlias, null)
         return if (keyEntry == null) {
@@ -114,7 +127,6 @@ class AndroidKeyManager : KeyManager {
         } else {
             getSecretKey(keyAlias)
         }
-
     }
 
     private fun getSecretKey(keyAlias: String) =

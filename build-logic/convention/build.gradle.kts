@@ -1,3 +1,6 @@
+import org.gradle.initialization.DependenciesAccessors
+import org.gradle.kotlin.dsl.support.serviceOf
+
 plugins {
     `kotlin-dsl`
 }
@@ -11,14 +14,14 @@ dependencies {
     compileOnly(libs.compile.gradle.plugins.ksp)
     compileOnly(libs.compile.gradle.plugins.mokkery)
     compileOnly(libs.compile.gradle.plugins.metro)
-//    implementation(libs.detekt.gradle.plugin)
-    implementation(libs.detekt.compiler.plugin)
+    implementation(libs.detekt.gradle.plugin)
+    compileOnly(files(gradle.serviceOf<DependenciesAccessors>().classes.asFiles))
 }
 
 gradlePlugin {
     plugins {
         register("kotlinMultiplatform") {
-            id = "komodo.kotlin.multiplatform"
+            id = "komodo.multiplatform"
             implementationClass = "ca.glong.komodo.KotlinMultiplatformConventionPlugin"
         }
         register("androidLibrary") {

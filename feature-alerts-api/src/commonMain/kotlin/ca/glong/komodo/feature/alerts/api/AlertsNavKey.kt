@@ -4,4 +4,5 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object AlertsKey : NavKey
+data object AlertsKey :
+          NavKey

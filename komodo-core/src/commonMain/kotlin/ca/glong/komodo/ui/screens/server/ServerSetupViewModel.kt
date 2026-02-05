@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.glong.komodo.data.dto.GetLoginOptionsResponse
 import ca.glong.komodo.domain.repository.AuthRepository
-import kotlinx.coroutines.launch
 import ca.glong.komodo.shared.infra.state.DefaultStateFlow
 import ca.glong.komodo.shared.infra.state.MutableDefaultStateFlow
+import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 
 abstract class IServerSetupViewMoel : ViewModel() {

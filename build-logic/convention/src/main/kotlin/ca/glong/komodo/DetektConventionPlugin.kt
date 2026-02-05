@@ -1,35 +1,37 @@
 package ca.glong.komodo
 
-//import dev.detekt.gradle.Detekt
-//import dev.detekt.gradle.extensions.DetektExtension
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.DetektCreateBaselineTask
+import dev.detekt.gradle.extensions.DetektExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceTask
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class DetektConventionPlugin : Plugin<Project> {
+
+    val Project.rootDirPath: String
+        get() = project.rootDir.path
+    val Project.configPath
+        get() = files("$rootDirPath/codestyle/detekt/detekt.yaml")
+
+    val Project.baselinePath: Provider<RegularFile>
+        get() = layout.buildDirectory.file("baseline/detekt.xml")
+
     override fun apply(target: Project) {
         with(target) {
-            // Apply the base Detekt plugin
-//            pluginManager.apply(Plugins.DETEKT)
-
-            // Configure the Detekt extension
-//            extensions.getByType<DetektExtension>().configure(this)
-
-//            // Configure all tasks of type Detekt
-//            tasks.withType<KotlinCompile>().configureEach {
-//
-//            }
-//            tasks.withType<Detekt>().configureEach {
-//                configureTask()
-//            }
-
-            // Add detekt plugin dependencies
-//            configureDependencies()
+            with(pluginManager) {
+                alias(libs2.plugins.detekt)
+//                alias(libs2.plugins.detektCompilerPlugin)
+            }
+            configureExtension()
+            configureTasks()
+            configureDependencies()
         }
     }
 
@@ -37,63 +39,66 @@ class DetektConventionPlugin : Plugin<Project> {
      * Configures the Detekt extension for the project.
      * See: https://detekt.dev/docs/gettingstarted/gradle#configuration
      */
-//    private fun DetektExtension.configure(project: Project) {
-//        val rootDirPath = project.rootDir.path
-//        // Point to the detekt configuration file
-//        config.setFrom(project.files("$rootDirPath/codestyle/detekt/detekt.yml"))
-//
-//        // Sets the baseline file to be used.
-//        // baseline = project.file("$rootDirPath/codestyle/detekt/baseline.xml")
-//
-//        // The sources to be analyzed.
-//        source.setFrom(
-//            project.files(
-//                "src/main/java",
-//                "src/test/java",
-//                "src/main/kotlin",
-//                "src/test/kotlin"
-//            )
-//        )
-//
-//        // Automatically correct issues
-//        autoCorrect.set(project.hasProperty("ac"))
-//
-//        // Run detekt in parallel
-//        parallel.set(true)
-//
-//        // Fails the build if any rule violations are found.
-//        // Not enabled by default to allow for CI to report issues without blocking.
-//        // ignoreFailures = false
-//
-//        basePath.set(project.rootDir)
-//
-//        // Android: Don't create tasks for the specified build types (e.g. "release")
-////        ignoredBuildTypes =
-////            listOf("Release", "release", "Proguard", "proguard", "debug", "Debug")
-////        ignoredFlavors = listOf("Staging", "staging", "Prod", "prod", "Dev", "dev")
-////        ignoredVariants = listOf(
-////            "devDebug", "devProguard", "devRelease",
-////            "prodDebug", "prodProguard", "prodRelease",
-////            "stagingDebug", "stagingProguard", "stagingRelease",
-////        )
-//    }
+    private fun Project.configureExtension() {
+        configure<DetektExtension> {
+            config.setFrom(configPath)
 
-    /**
-     * Configures a single Detekt task.
-     */
-//    private fun Detekt.configureTask() {
-//        // Set the sources for this specific task
-//        configureSources()
-//
-//        // Set the JVM target for analysis
-//        jvmTarget.set(JavaVersion.VERSION_21.toString())
-//
-//        reports {
-//            checkstyle.required.set(true) // For CI/CD systems
-//            html.required.set(false) // For local inspection
-//            sarif.required.set(false) // For GitHub code scanning
+            // Automatically correct issues
+            autoCorrect.set(project.hasProperty("ac"))
+
+            // Run detekt in parallel
+            parallel.set(true)
+
+            baseline.set(baselinePath)
+            basePath.set(file(rootDirPath))
+
+            ignoredBuildTypes.set(listOf("Release", "release"))
+        }
+    }
+
+    private fun Project.configureTasks() {
+//        tasks.withType<KotlinCompile>().configureEach {
+//            extensions.configure<KotlinCompileTaskDetektExtension> {
+//                getSarif().enabled.set(true)
+//                getHtml().enabled.set(true)
+//            }
 //        }
-//    }
+
+        tasks.withType<Detekt>().configureEach {
+            jvmTarget.set(JavaVersion.VERSION_21.toString())
+            reports {
+//                checkstyle.required.set(true) // For CI/CD systems
+                html.required.set(true) // For local inspection
+                sarif.required.set(true) // For GitHub code scanning
+            }
+//            configureSources()
+            setSource(files(projectDir))
+
+            include("**/*.kt", "**/*.kts")
+            exclude(
+                "**/build/**",
+                "**/resources/**",
+                "**/res/**",
+                "**/.idea/**"
+            )
+        }
+
+        tasks.withType<DetektCreateBaselineTask>().configureEach {
+            autoCorrect.set(project.hasProperty("ac"))
+            jvmTarget.set(JavaVersion.VERSION_21.toString())
+//            baseline.set(baselinePath)
+//            configureSources()
+            setSource(files(projectDir))
+
+            include("**/*.kt", "**/*.kts")
+            exclude(
+                "**/build/**",
+                "**/resources/**",
+                "**/res/**",
+                "**/.idea/**"
+            )
+        }
+    }
 
     /**
      * Configures the source sets for Detekt analysis, including and excluding specific patterns.
@@ -113,8 +118,8 @@ class DetektConventionPlugin : Plugin<Project> {
      */
     private fun Project.configureDependencies() {
         dependencies {
-            add("detektPlugins", libs.findLibrary("detekt.formatting").get())
-            add("detektPlugins", libs.findLibrary("detekt.compose").get())
+            add("detektPlugins", libs2.detekt.compose)
+            add("detektPlugins", libs2.detekt.formatting)
         }
     }
 }

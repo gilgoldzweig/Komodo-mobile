@@ -52,10 +52,11 @@ private fun AlertCard(alert: AlertItem) {
                 Text(alert.title, style = MaterialTheme.typography.titleMedium)
                 Text(
                     alert.severity,
-                    color = if (alert.severity == "Error")
+                    color = if (alert.severity == "Error") {
                         MaterialTheme.colorScheme.error
-                    else
+                    } else {
                         MaterialTheme.colorScheme.primary
+                    }
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))

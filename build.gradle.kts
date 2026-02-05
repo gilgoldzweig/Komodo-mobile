@@ -1,6 +1,3 @@
-import org.gradle.kotlin.dsl.detekt
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
@@ -16,16 +13,23 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.metro) apply false
     alias(libs.plugins.mokkery) apply false
-    alias(libs.plugins.detekt.compiler.plugin)
+    id("komodo.detekt")
+//    alias(libs.plugins.detektCompilerPlugin) apply false
 }
 
-detekt {
-    config.setFrom(files("$rootDir/codestyle/detekt/detekt.yml"))
-    autoCorrect.set(project.hasProperty("ac"))
-    enableCompilerPlugin.set(false)
+subprojects {
+    afterEvaluate {
+        plugins.apply("komodo.detekt")
+    }
 }
 
-dependencies {
-    detektPlugins(libs.detekt.compose)
-    detektPlugins(libs.detekt.formatting)
-}
+// detekt {
+//    config.setFrom(files("$rootDir/codestyle/detekt/detekt.yml"))
+//    autoCorrect.set(project.hasProperty("ac"))
+//    enableCompilerPlugin.set(false)
+// }
+//
+// dependencies {
+//    detektPlugins(libs.detekt.compose)
+//    detektPlugins(libs.detekt.formatting)
+// }

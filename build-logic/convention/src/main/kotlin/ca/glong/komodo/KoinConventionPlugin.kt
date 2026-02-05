@@ -2,41 +2,34 @@ package ca.glong.komodo
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.findByType
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class KoinConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-//        with(target) {
-//            with(pluginManager) {
-//                apply(Plugins.KOIN)
-////                apply(Plugins.KSP)
-//            }
-//
-//            if (extensions.findByType<KotlinMultiplatformExtension>() != null) {
-//                multiplatformDependencies(commonMain = {
-//                    bom("koin-bom")
-//                    bundle("koin")
-//                }, androidMain = {
-//                    bundle("koin")
-//                }, iosMain = {
-//                    bundle("koin")
-//                })
-//            } else {
-//                dependencies {
-//                    bom("koin-bom")
-//                    bundle("koin")
-//                }
-//            }
-//            dependencies {
-////                ksp("koin-compiler")
-////                add("kspCommonMainMetadata", lib("koin-compiler"))
-////                add("kspAndroid", lib("koin-compiler"))
-////                add("kspIosSimulatorArm64", lib("koin-compiler"))
-////                add("kspIosX64", lib("koin-compiler"))
-////                add("kspIosArm64", lib("koin-compiler"))
-//            }
-//        }
+        with(target) {
+            with(pluginManager) {
+                alias(libs2.plugins.koin.compiler)
+            }
+
+            if (extensions.findByType<KotlinMultiplatformExtension>() == null) return
+            extensions.configure<KotlinMultiplatformExtension> {
+                sourceSets {
+                    commonMain.dependencies {
+                        implementation(project.dependencies.platform(libs2.koin.bom))
+                        implementation(libs2.bundles.koin)
+                    }
+                    androidMain.dependencies {
+                        implementation(libs2.koin.android)
+                    }
+                    commonTest.dependencies {
+                        implementation(project.dependencies.platform(libs2.koin.bom))
+                        implementation(libs2.koin.test)
+                    }
+                }
+            }
+        }
     }
 }

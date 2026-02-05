@@ -1,6 +1,5 @@
 class Test {
 
     fun sampleTest() {
-
     }
 }

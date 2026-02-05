@@ -1,6 +1,5 @@
 package ca.glong.komodo.di
 
-import androidx.navigation3.runtime.NavKey
 import ca.glong.komodo.feature.alerts.navigation.AlertsModule
 import ca.glong.komodo.feature.auth.navigation.AuthModule
 import ca.glong.komodo.feature.dashboard.navigation.DashboardModule
@@ -12,9 +11,7 @@ import ca.glong.komodo.shared.infra.navigation.Navigator
 import ca.glong.komodo.shared.infra.navigation.NavigatorMain
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
-import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Scope
 import org.koin.core.annotation.Single
 
 @Configuration

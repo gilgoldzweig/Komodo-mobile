@@ -1,5 +1,5 @@
 plugins {
-    id("komodo.kotlin.multiplatform")
+    id("komodo.multiplatform")
     id("komodo.android.library")
     id("komodo.compose")
     id("komodo.koin")
@@ -15,7 +15,6 @@ kotlin {
             implementation(projects.featureResourcesApi)
             implementation(projects.featureAlertsApi)
             implementation(projects.sharedInfra)
-
 
             // Coroutines
             implementation(libs.kotlinx.coroutines.core)

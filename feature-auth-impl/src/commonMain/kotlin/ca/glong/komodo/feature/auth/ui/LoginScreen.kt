@@ -21,7 +21,6 @@ fun LoginScreen(
     val state by viewModel.state.collectAsState()
     val navStack = remember { mutableStateListOf<Any>(LoginKey) }
 
-
     LaunchedEffect(state) {
         if (state is LoginState.Success) {
             navStack.add(DashboardKey)

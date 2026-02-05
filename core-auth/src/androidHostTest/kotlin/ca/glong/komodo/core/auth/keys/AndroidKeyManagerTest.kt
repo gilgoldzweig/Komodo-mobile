@@ -1,14 +1,12 @@
 package ca.glong.komodo.core.auth.keys
 
-import org.junit.Test
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import java.security.KeyStore
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])

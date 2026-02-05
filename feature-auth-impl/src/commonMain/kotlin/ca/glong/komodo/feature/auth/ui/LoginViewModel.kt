@@ -3,7 +3,6 @@ package ca.glong.komodo.feature.auth.ui
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.koin.core.annotation.Factory
 import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel

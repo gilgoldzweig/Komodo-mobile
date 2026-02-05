@@ -3,17 +3,16 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
-        google()
         mavenCentral()
+        google()
         gradlePluginPortal()
     }
 }
 
 dependencyResolutionManagement {
     repositories {
-        google()
         mavenCentral()
-        // Needed for org.jetbrains.androidx.navigation3 (Navigation 3 for KMP)
+        google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }

@@ -1,12 +1,6 @@
-build:
-  maxIssues: 0
-  excludeCorrectable: true
-
 config:
-  validation: true
+  validation: false
   warningsAsErrors: true
-  # when writing own rules with new properties, exclude the property path e.g.: 'my_rule_set,.*>.*>[my_property]'
-  excludes: ''
 
 processors:
   active: true
@@ -23,14 +17,14 @@ processors:
 console-reports:
   active: true
 
-output-reports:
-  active: true
-  exclude:
-    - 'HtmlOutputReport'
-    - 'TxtOutputReport'
-    - 'SarifOutputReport'
-    - 'MdOutputReport'
-    #  - 'XmlOutputReport'
+#output-reports:
+#  active: true
+#  exclude:
+#    - 'HtmlOutputReport'
+#    - 'TxtOutputReport'
+#    - 'SarifOutputReport'
+#    - 'MdOutputReport'
+#    #  - 'XmlOutputReport'
 
 comments:
   active: true
@@ -55,12 +49,7 @@ comments:
   UndocumentedPublicClass:
     active: false
     excludes: &testFolders
-      - '**/test/**'
-      - '**/androidTest/**'
-      - '**/commonTest/**'
-      - '**/jvmTest/**'
-      - '**/jsTest/**'
-      - '**/iosTest/**'
+      - '**/*Test/**'
     searchInNestedClass: true
     searchInInnerClass: true
     searchInInnerObject: true
@@ -635,7 +624,7 @@ style:
       - 'java.util.*'
       - 'kotlinx.android.synthetic.*'
 
-formatting:
+ktlint:
   active: true
   android: true
   autoCorrect: true

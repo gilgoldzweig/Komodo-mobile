@@ -1,5 +1,5 @@
 plugins {
-    id("komodo.kotlin.multiplatform")
+    id("komodo.multiplatform")
     id("komodo.android.library")
     id("komodo.koin")
     id("komodo.nav")
@@ -8,6 +8,6 @@ plugins {
 
 kotlin {
     sourceSets.commonMain.dependencies {
-        api(libs.nav3.ui)
+        api(libs.bundles.nav3)
     }
 }

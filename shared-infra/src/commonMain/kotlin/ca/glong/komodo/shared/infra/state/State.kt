@@ -1,7 +1,5 @@
 package ca.glong.komodo.shared.infra.state
 
-import kotlinx.coroutines.flow.Flow
-
 /**
  * Wrapper class that is able to handle different state
  *

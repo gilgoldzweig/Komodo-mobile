@@ -98,6 +98,7 @@ koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-navigation3" }
 koin-test = { module = "io.insert-koin:koin-test" }
+koin-android = { module = "io.insert-koin:koin-android" }
 koin-annotations = { module = "io.insert-koin:koin-annotations"}
 #koin-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations"}
 
@@ -149,7 +150,7 @@ metro-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compo
 # Detekt
 detekt-api = { module = "dev.detekt:detekt-api", version.ref = "detekt" }
 detekt-test = { module = "dev.detekt:detekt-test", version.ref = "detekt" }
-detekt-formatting = { module = "dev.detekt:detekt-formatting", version.ref = "detekt" }
+detekt-formatting = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 detekt-compose = { module = "ru.kode:detekt-rules-compose", version.ref = "detekt-compose-rules" }
 detekt-gradle-plugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 detekt-compiler-plugin = { module = "dev.detekt:detekt-compiler-plugin", version.ref = "detekt" }
@@ -169,7 +170,7 @@ koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plu
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 detekt = { id = "dev.detekt", version.ref = "detekt" }
-detekt-compiler-plugin = { id = "dev.detekt.gradle.compiler-plugin", version.ref = "detekt" }
+detektCompilerPlugin = { id = "dev.detekt.gradle.compiler-plugin", version.ref = "detekt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]

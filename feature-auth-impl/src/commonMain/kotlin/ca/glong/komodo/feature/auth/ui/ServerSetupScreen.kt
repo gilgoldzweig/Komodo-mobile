@@ -17,7 +17,6 @@ fun ServerSetupScreen(
     val serverUrl by viewModel.serverUrl.collectAsState()
     val navStack = remember { mutableStateListOf<Any>(ServerSetupKey) }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()

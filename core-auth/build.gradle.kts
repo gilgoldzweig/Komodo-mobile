@@ -1,12 +1,12 @@
 plugins {
-    id("komodo.kotlin.multiplatform")
+    id("komodo.multiplatform")
     id("komodo.android.library")
     id("komodo.koin")
+    id("komodo.detekt")
 //    alias(libs.plugins.android.kotlin.multiplatform.library)
 }
 
 kotlin {
-
 
     sourceSets {
 
@@ -16,15 +16,12 @@ kotlin {
 
             // DateTime for TTL handling
             implementation(libs.kotlinx.datetime)
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.bundles.koin)
         }
 
         androidMain.dependencies {
             // Android Security/Crypto for EncryptedDataStore
             implementation(libs.androidx.security.crypto.ktx)
             implementation(libs.androidx.datastore.preferences)
-            implementation("io.insert-koin:koin-annotations:2.3.2-Beta1")
         }
 
         commonTest.dependencies {
@@ -40,4 +37,3 @@ kotlin {
         }
     }
 }
-

@@ -1,16 +1,23 @@
 package ca.glong.komodo
 
+import org.gradle.accessors.dm.LibrariesForLibs // This will be red in IDE until build, that's normal
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.plugins.PluginManager
+import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.plugin.use.PluginDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 
-
+val Project.libs2: LibrariesForLibs
+    get() = (this as org.gradle.api.plugins.ExtensionAware)
+        .extensions
+        .getByName("libs") as LibrariesForLibs
 /**
  * Get project's Version Catalog named 'libs' or throw
  */
@@ -18,6 +25,10 @@ internal val Project.libs: VersionCatalog
     get() = extensions
         .getByType<VersionCatalogsExtension>()
         .named("libs")
+
+internal fun PluginManager.alias(plugin: Provider<PluginDependency>) {
+    apply(plugin.get().pluginId)
+}
 
 internal fun VersionCatalog.requiredVersion(alias: String): String {
     val version = findVersion(alias)
@@ -67,16 +78,13 @@ context(project: Project)
 internal fun KotlinDependencyHandler.bundle(alias: String): Dependency? =
     implementation(project.libs.bundle(alias))
 
-
 context(project: Project)
 internal fun DependencyHandler.ksp(alias: String): Dependency? =
     add("ksp", project.lib(alias))
 
-
 context(project: Project)
 internal fun DependencyHandler.bundle(alias: String): Dependency? =
     add("implementation", project.libs.bundle(alias))
-
 
 context(project: Project)
 internal fun KotlinDependencyHandler.implLib(alias: String): Dependency? =
@@ -102,27 +110,27 @@ fun Project.multiplatformDependencies(
 ) {
     extensions.configure<KotlinMultiplatformExtension> {
         sourceSets.apply {
-            this.commonMain.dependencies {
+            findByName("commonMain")?.dependencies {
                 commonMain()
                 all()
             }
-            this.commonTest.dependencies {
+            findByName("commonTest")?.dependencies {
                 commonTest()
                 all()
             }
-            this.androidMain.dependencies {
+            findByName("androidMain")?.dependencies {
                 androidMain()
                 all()
             }
-            this.androidUnitTest.dependencies {
+            findByName("androidUnitTest")?.dependencies {
                 androidUnitTest()
                 all()
             }
-            this.iosMain.dependencies {
+            findByName("iosMain")?.dependencies {
                 iosMain()
                 all()
             }
-            this.iosTest.dependencies {
+            findByName("iosTest")?.dependencies {
                 iosTest()
                 all()
             }

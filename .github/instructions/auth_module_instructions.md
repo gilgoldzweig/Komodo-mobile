@@ -27,12 +27,12 @@ To ensure 100% reliability and coverage, this implementation follows a strict TD
 - [ ] **Initialize KMP Module**
     - [ ] Create a new module (e.g., `:core:auth`).
     - [ ] Configure `build.gradle.kts` to apply Komodo convention plugins:
-        - [ ] Apply `id("komodo.kotlin.multiplatform")` (Sets up KMP, Serialization, Mokkery, iOS targets).
+        - [ ] Apply `id("komodo.multiplatform")` (Sets up KMP, Serialization, Mokkery, iOS targets).
         - [ ] Apply `id("komodo.android.library")` (Sets up Android target, SDK versions, Namespace).
 - [ ] **Define Failure Domains**
     - [ ] Create a sealed hierarchy `AuthError` in `commonMain` to handle specific failures (e.g., `KeyStoreError`, `BioAuthError`, `InvalidKeyFormat`).
 - [ ] **Setup Test Coverage Infrastructure**
-    - [ ] Verify `Mokkery` is active (applied automatically by `komodo.kotlin.multiplatform`).
+    - [ ] Verify `Mokkery` is active (applied automatically by `komodo.multiplatform`).
 
 ### Phase 2: Secure Storage Abstraction (The Foundation)
 *Goal: Abstract platform-specific secure storage (KeyStore vs Keychain) for use in common code.*

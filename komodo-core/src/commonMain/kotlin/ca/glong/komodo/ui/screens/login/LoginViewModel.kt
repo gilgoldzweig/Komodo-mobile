@@ -3,9 +3,9 @@ package ca.glong.komodo.ui.screens.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.glong.komodo.domain.repository.AuthRepository
-import kotlinx.coroutines.launch
 import ca.glong.komodo.shared.infra.state.MutableUnitStateFlow
 import ca.glong.komodo.shared.infra.state.UnitStateFlow
+import kotlinx.coroutines.launch
 
 abstract class ILoginViewModel : ViewModel() {
     abstract val uiState: UnitStateFlow
