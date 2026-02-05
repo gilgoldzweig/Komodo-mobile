@@ -19,7 +19,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
             extensions.configure<KotlinMultiplatformExtension> {
                 (this as ExtensionAware).extensions.configure<KotlinMultiplatformAndroidLibraryExtension> {
-                    namespace = "${Packages.KOMODO}.$moduleName"
+                    namespace = "$KOMODO_PACKAGE.$moduleName"
 
                     compileSdk = libs.versions.android.compileSdk.get().toInt()
                     minSdk = libs.versions.android.minSdk.get().toInt()

@@ -1,4 +1,3 @@
 package ca.glong.komodo
-internal object Packages {
-    const val KOMODO = "ca.glong.komodo"
-}
+
+const val KOMODO_PACKAGE = "ca.glong.komodo"

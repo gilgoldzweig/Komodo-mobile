@@ -16,7 +16,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<ApplicationExtension> {
-                namespace = "${Packages.KOMODO}.android.app"
+                namespace = "$KOMODO_PACKAGE.android.app"
                 compileSdk = libs.versions.android.compileSdk.get().toInt()
                 defaultConfig {
                     minSdk = libs.versions.android.minSdk.get().toInt()
