@@ -1,6 +1,7 @@
 package ca.glong.komodo
 
 import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -11,21 +12,20 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply(Plugins.ANDROID_APPLICATION)
+                alias(libs.plugins.androidApplication)
             }
 
             extensions.configure<ApplicationExtension> {
                 namespace = "${Packages.KOMODO}.android.app"
-
-                compileSdk = versionInt(VersionNames.COMPILE_SDK)
+                compileSdk = libs.versions.android.compileSdk.get().toInt()
                 defaultConfig {
-                    minSdk = versionInt(VersionNames.MIN_SDK)
-                    targetSdk = versionInt(VersionNames.TARGET_SDK)
+                    minSdk = libs.versions.android.minSdk.get().toInt()
+                    targetSdk = libs.versions.android.targetSdk.get().toInt()
                 }
                 
                 compileOptions {
-                    sourceCompatibility = org.gradle.api.JavaVersion.VERSION_21
-                    targetCompatibility = org.gradle.api.JavaVersion.VERSION_21
+                    sourceCompatibility = JavaVersion.VERSION_21
+                    targetCompatibility = JavaVersion.VERSION_21
                 }
                 buildFeatures {
                     compose = true

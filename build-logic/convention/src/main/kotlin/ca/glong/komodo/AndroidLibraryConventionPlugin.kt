@@ -15,24 +15,26 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         with(target) {
             val moduleName = project.displayName
             with(pluginManager) {
-                apply(Plugins.MULTIPLATFORM_LIBRARY)
+                alias(libs.plugins.android.kotlin.multiplatform.library)
             }
             extensions.configure<KotlinMultiplatformExtension> {
                 (this as ExtensionAware).extensions.configure<KotlinMultiplatformAndroidLibraryExtension> {
-                    minSdk = versionInt(VersionNames.MIN_SDK)
-                    compileSdk = versionInt(VersionNames.COMPILE_SDK)
                     namespace = "${Packages.KOMODO}.$moduleName"
+
+                    compileSdk = libs.versions.android.compileSdk.get().toInt()
+                    minSdk = libs.versions.android.minSdk.get().toInt()
+
 
                     withHostTest { }
                     withDeviceTest {
                         instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                     }
                 }
-                
+
                 sourceSets.apply {
                     val androidHostTest by getting
                     androidHostTest.dependencies {
-                        bundle("common-test")
+                        implementation(libs.bundles.common.test)
                     }
                 }
             }

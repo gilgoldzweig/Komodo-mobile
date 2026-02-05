@@ -11,22 +11,22 @@ class KoinConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                alias(libs2.plugins.koin.compiler)
+                alias(libs.plugins.koin.compiler)
             }
 
             if (extensions.findByType<KotlinMultiplatformExtension>() == null) return
             extensions.configure<KotlinMultiplatformExtension> {
                 sourceSets {
                     commonMain.dependencies {
-                        implementation(project.dependencies.platform(libs2.koin.bom))
-                        implementation(libs2.bundles.koin)
+                        implementation(project.dependencies.platform(libs.koin.bom))
+                        implementation(libs.bundles.koin)
                     }
                     androidMain.dependencies {
-                        implementation(libs2.koin.android)
+                        implementation(libs.koin.android)
                     }
                     commonTest.dependencies {
-                        implementation(project.dependencies.platform(libs2.koin.bom))
-                        implementation(libs2.koin.test)
+                        implementation(project.dependencies.platform(libs.koin.bom))
+                        implementation(libs.koin.test)
                     }
                 }
             }

@@ -26,7 +26,7 @@ class DetektConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                alias(libs2.plugins.detekt)
+                alias(libs.plugins.detekt)
 //                alias(libs2.plugins.detektCompilerPlugin)
             }
             configureExtension()
@@ -118,8 +118,8 @@ class DetektConventionPlugin : Plugin<Project> {
      */
     private fun Project.configureDependencies() {
         dependencies {
-            add("detektPlugins", libs2.detekt.compose)
-            add("detektPlugins", libs2.detekt.formatting)
+            add("detektPlugins", libs.detekt.compose)
+            add("detektPlugins", libs.detekt.formatting)
         }
     }
 }
