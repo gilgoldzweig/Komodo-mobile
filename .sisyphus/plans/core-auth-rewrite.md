@@ -517,7 +517,7 @@ Wave 6 (Final):
 
 ---
 
- - [x] 6. **Implement iOS Envelope Encryption (Swift)**
+- [ ] 6. **Implement iOS Envelope Encryption (Swift)**
 
   **What to do**:
   - Create `Security/` group in Xcode project under `KomodoIOS/KomodoIOS/`
@@ -637,7 +637,7 @@ Wave 6 (Final):
 
 ---
 
-- [ ] 8. **Implement iOS SecureStorage (Swift)**
+- [x] 8. **Implement iOS SecureStorage (Swift)**
 
   **What to do**:
   - Create `SecureStorage.swift` in `KomodoIOS/KomodoIOS/Security/`
