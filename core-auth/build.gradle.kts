@@ -23,6 +23,10 @@ kotlin {
             implementation(libs.androidx.security.crypto.ktx)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.tink.android)
+            
+            // Credential Manager for Passkeys (Task 14)
+            implementation(libs.androidx.credentials)
+            implementation(libs.androidx.credentials.play.services)
         }
 
         commonTest.dependencies {

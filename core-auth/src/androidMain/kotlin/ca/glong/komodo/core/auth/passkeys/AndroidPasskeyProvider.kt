@@ -26,10 +26,9 @@ class AndroidPasskeyProvider(
     override suspend fun createCredential(
         challenge: ByteArray,
         rpId: String,
-        userId: String,
-        userName: String
-    ): Result<AttestationResult> = runCatching {
-        val requestJson = buildCreateCredentialJson(challenge, rpId, userId, userName)
+        userId: String
+    ): Result<AttestationResponse> = runCatching {
+        val requestJson = buildCreateCredentialJson(challenge, rpId, userId)
         
         val request = CreatePublicKeyCredentialRequest(requestJson)
         val result = credentialManager.createCredential(context, request)
@@ -45,10 +44,9 @@ class AndroidPasskeyProvider(
     
     override suspend fun getAssertion(
         challenge: ByteArray,
-        rpId: String,
-        allowedCredentials: List<ByteArray>
-    ): Result<AssertionResult> = runCatching {
-        val requestJson = buildGetAssertionJson(challenge, rpId, allowedCredentials)
+        rpId: String
+    ): Result<AssertionResponse> = runCatching {
+        val requestJson = buildGetAssertionJson(challenge, rpId)
         
         val option = GetPublicKeyCredentialOption(requestJson)
         val request = GetCredentialRequest(listOf(option))
@@ -66,8 +64,7 @@ class AndroidPasskeyProvider(
     private fun buildCreateCredentialJson(
         challenge: ByteArray,
         rpId: String,
-        userId: String,
-        userName: String
+        userId: String
     ): String {
         val challengeBase64 = challenge.toBase64Url()
         val userIdBase64 = userId.encodeToByteArray().toBase64Url()
@@ -80,8 +77,7 @@ class AndroidPasskeyProvider(
             })
             put("user", JSONObject().apply {
                 put("id", userIdBase64)
-                put("name", userName)
-                put("displayName", userName)
+                put("displayName", rpId)
             })
             put("pubKeyCredParams", JSONArray().apply {
                 put(JSONObject().apply {
@@ -106,8 +102,7 @@ class AndroidPasskeyProvider(
     
     private fun buildGetAssertionJson(
         challenge: ByteArray,
-        rpId: String,
-        allowedCredentials: List<ByteArray>
+        rpId: String
     ): String {
         val challengeBase64 = challenge.toBase64Url()
         
@@ -116,59 +111,56 @@ class AndroidPasskeyProvider(
             put("rpId", rpId)
             put("timeout", 60000)
             put("userVerification", "required")
-            
-            if (allowedCredentials.isNotEmpty()) {
-                put("allowCredentials", JSONArray().apply {
-                    allowedCredentials.forEach { credId ->
-                        put(JSONObject().apply {
-                            put("type", "public-key")
-                            put("id", credId.toBase64Url())
-                        })
-                    }
-                })
-            }
         }.toString()
     }
     
     private fun parseAttestationResponse(
         response: CreatePublicKeyCredentialResponse
-    ): AttestationResult {
+    ): AttestationResponse {
         val json = JSONObject(response.registrationResponseJson)
         
-        val credentialId = json.getString("id").fromBase64Url()
+        val id = json.getString("id")
+        val rawId = id.fromBase64Url()
         val responseObj = json.getJSONObject("response")
-        val attestationObject = responseObj.getString("attestationObject").fromBase64Url()
         val clientDataJson = responseObj.getString("clientDataJSON").fromBase64Url()
+        val attestationObject = responseObj.getString("attestationObject").fromBase64Url()
         
-        return AttestationResult(
-            credentialId = credentialId,
-            attestationObject = attestationObject,
-            clientDataJson = clientDataJson
+        return AttestationResponse(
+            id = id,
+            rawId = rawId,
+            response = AttestationObject(
+                clientDataJSON = clientDataJson,
+                attestationObject = attestationObject
+            )
         )
     }
     
     private fun parseAssertionResponse(
         credential: PublicKeyCredential
-    ): AssertionResult {
+    ): AssertionResponse {
         val json = JSONObject(credential.authenticationResponseJson)
         
-        val credentialId = json.getString("id").fromBase64Url()
+        val id = json.getString("id")
+        val rawId = id.fromBase64Url()
         val responseObj = json.getJSONObject("response")
+        val clientDataJson = responseObj.getString("clientDataJSON").fromBase64Url()
         val authenticatorData = responseObj.getString("authenticatorData").fromBase64Url()
         val signature = responseObj.getString("signature").fromBase64Url()
-        val clientDataJson = responseObj.getString("clientDataJSON").fromBase64Url()
         val userHandle = if (responseObj.has("userHandle")) {
             responseObj.getString("userHandle").fromBase64Url()
         } else {
             null
         }
         
-        return AssertionResult(
-            credentialId = credentialId,
-            authenticatorData = authenticatorData,
-            signature = signature,
-            clientDataJson = clientDataJson,
-            userHandle = userHandle
+        return AssertionResponse(
+            id = id,
+            rawId = rawId,
+            response = AssertionObject(
+                clientDataJSON = clientDataJson,
+                authenticatorData = authenticatorData,
+                signature = signature,
+                userHandle = userHandle
+            )
         )
     }
     

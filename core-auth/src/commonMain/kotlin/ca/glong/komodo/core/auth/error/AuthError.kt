@@ -141,6 +141,16 @@ sealed class AuthError : RuntimeException() {
         data class NotEnrolled(val dummy: Boolean = true) : PasskeyError(
             message = "No biometric enrolled"
         )
+
+        @Serializable
+        data class NoCredentials(val dummy: Boolean = true) : PasskeyError(
+            message = "No credentials available"
+        )
+
+        @Serializable
+        data class OperationFailed(val reason: String) : PasskeyError(
+            message = "Passkey operation failed: $reason"
+        )
     }
 
     /**

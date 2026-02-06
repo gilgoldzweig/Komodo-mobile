@@ -999,7 +999,7 @@ Wave 6 (Final):
 
 ### Phase 5: Passkeys
 
-- [x] 14. **Implement Android Passkeys (Credential Manager)**
+- [x] 14. **Implement Android Passkeys (Credential Manager)** ✅ FIXED - dependencies added, types corrected
 
   **What to do**:
   - **(TDD Exempt)**: Device/UI required for full testing
