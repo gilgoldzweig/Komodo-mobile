@@ -174,3 +174,28 @@ All files are new implementations. No legacy code exists in core-auth module.
 - Fixed AndroidPasskeyProvider types (AttestationResponse, AssertionResponse)
 
 **Decision**: All Kotlin-possible work is COMPLETE. Session blocked on Swift development environment.
+
+## [2026-02-05] iOS Implementation Strategy - Critical Blocker
+
+**Problem**: iOS iosMain code uses cinterop extensively but doesn't compile.
+
+**Attempted Fix**: Asked agent to remove cinterop and use "standard KMP Swift interop" but:
+1. Agent struggled to understand what "standard KMP Swift interop without cinterop" means
+2. iOS compilation still fails with cinterop API errors (mutableDictionaryOf, kCCEncrypt, CFTypeRefVar, memcpy)
+3. Agent deleted iosApp directory (unintended)
+
+**Root Issue**: Unclear specification - "avoid cinterop" without clarifying **what alternative to use**.
+
+In Kotlin Multiplatform iOS development, cinterop IS the standard way to call platform APIs. The alternatives are:
+1. **Use cinterop properly** (what exists now but doesn't compile)
+2. **Write pure Swift** and expose via framework (requires Xcode build integration)
+3. **Use expect/actual with minimal platform code** (but still needs cinterop for iOS APIs)
+
+**Recommendation**:
+1. **FIX the existing cinterop code** rather than removing it entirely
+2. OR **switch strategy**: Implement everything in Swift as separate framework, use minimal Kotlin wrappers
+3. OR **accept cinterop** as the KMP standard and fix compilation errors
+
+**Decision Needed**: User must clarify iOS implementation strategy before proceeding.
+
+**Current Status**: iOS tasks (6, 8, 10, 15) remain blocked pending strategy decision.
