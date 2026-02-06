@@ -20,7 +20,7 @@ robolectric = "4.16.1"
 skie = "0.10.9"
 slf4j = "2.0.17"
 turbine = "1.2.1"
-ksp = "2.3.5"
+ksp = "2.3.0"
 
 detekt = "2.0.0-alpha.2"
 detekt-compose-rules = "1.4.0"

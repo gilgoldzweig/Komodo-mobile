@@ -29,7 +29,7 @@ actual fun platformCreateKeyManager(
 ): KeyManager {
     val context = getKoinContext().get<Context>()
     return AndroidKeyManager(
-        envelopeEncryption = envelopeEncryption as AndroidEnvelopeEncryption,
+        envelopeEncryption = envelopeEncryption,
         secureStorage = secureStorage as AndroidSecureStorage,
         context = context
     )

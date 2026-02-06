@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.metro) apply false
     alias(libs.plugins.mokkery) apply false
+    alias(libs.plugins.skie) apply false
     id("komodo.detekt")
 //    alias(libs.plugins.detektCompilerPlugin) apply false
 }

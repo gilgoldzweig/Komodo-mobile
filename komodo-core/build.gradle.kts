@@ -7,7 +7,11 @@ plugins {
     id("komodo.koin")
     id("komodo.nav")
     id("komodo.detekt")
-    // id("komodo.skie")  // Disabled - SKIE not needed for Kotlin-based iOS interop
+    id("komodo.skie")
+}
+
+skie {
+    isEnabled.set(false)  // TODO: Re-enable once Kotlin 2.3.x is stable and SKIE supports it
 }
 
 kotlin {

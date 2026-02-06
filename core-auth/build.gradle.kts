@@ -3,6 +3,11 @@ plugins {
     id("komodo.android.library")
     id("komodo.koin")
     id("komodo.detekt")
+    id("komodo.skie")
+}
+
+skie {
+    isEnabled.set(false)
 }
 
 

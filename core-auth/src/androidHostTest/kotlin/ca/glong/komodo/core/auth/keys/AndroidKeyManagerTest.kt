@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import ca.glong.komodo.core.auth.encryption.AndroidEnvelopeEncryption
 import ca.glong.komodo.core.auth.error.AuthError
 import ca.glong.komodo.core.auth.storage.AndroidSecureStorage
 import kotlinx.coroutines.test.runTest
@@ -30,7 +29,7 @@ private val Context.testDataStore: DataStore<Preferences> by preferencesDataStor
 class AndroidKeyManagerTest {
 
     private lateinit var context: Context
-    private lateinit var envelopeEncryption: AndroidEnvelopeEncryption
+    private lateinit var envelopeEncryption: EnvelopeEncryption
     private lateinit var secureStorage: AndroidSecureStorage
     private lateinit var keyManager: AndroidKeyManager
 
@@ -39,11 +38,11 @@ class AndroidKeyManagerTest {
         context = RuntimeEnvironment.getApplication()
         
         // Clear any existing data
-        val prefsDir = File(context.filesDir, "datastore")
-        prefsDir.deleteRecursively()
-        
-        envelopeEncryption = AndroidEnvelopeEncryption()
-        secureStorage = AndroidSecureStorage(context.testDataStore, context)
+         val prefsDir = File(context.filesDir, "datastore")
+         prefsDir.deleteRecursively()
+         
+         envelopeEncryption = FakeEnvelopeEncryption()
+         secureStorage = AndroidSecureStorage(context.testDataStore, context)
         keyManager = AndroidKeyManager(envelopeEncryption, secureStorage, context)
     }
 
@@ -287,15 +286,39 @@ class AndroidKeyManagerTest {
         assertTrue("Exception should be KeyError.GenerationFailed", exception is AuthError.KeyError.GenerationFailed)
     }
 
-    // Test 16: RSA_4096 not supported
-    @Test
-    fun testRsaNotSupported() = runTest {
-        val alias = "test_rsa"
-        
-        val result = keyManager.generateKeyPair(alias, KeyType.RSA_4096)
-        
-        assertTrue("RSA generation should fail", result.isFailure)
-        val exception = result.exceptionOrNull()
-        assertTrue("Exception should be KeyError.GenerationFailed", exception is AuthError.KeyError.GenerationFailed)
+     // Test 16: RSA_4096 not supported
+     @Test
+     fun testRsaNotSupported() = runTest {
+         val alias = "test_rsa"
+         
+         val result = keyManager.generateKeyPair(alias, KeyType.RSA_4096)
+         
+         assertTrue("RSA generation should fail", result.isFailure)
+         val exception = result.exceptionOrNull()
+         assertTrue("Exception should be KeyError.GenerationFailed", exception is AuthError.KeyError.GenerationFailed)
+     }
+ }
+
+/**
+ * Test double for EnvelopeEncryption that doesn't require AndroidKeyStore.
+ * Uses simple prefix-based transformation instead of real encryption.
+ */
+private class FakeEnvelopeEncryption : EnvelopeEncryption {
+    private val prefix = byteArrayOf(0xFA.toByte(), 0xAA.toByte())
+    
+    override suspend fun encrypt(data: ByteArray, keyAlias: String): Result<ByteArray> {
+        return Result.success(prefix + data)
+    }
+    
+    override suspend fun decrypt(encryptedData: ByteArray, keyAlias: String): Result<ByteArray> {
+        return if (encryptedData.size >= 2 && encryptedData[0] == prefix[0] && encryptedData[1] == prefix[1]) {
+            Result.success(encryptedData.copyOfRange(2, encryptedData.size))
+        } else {
+            Result.failure(Exception("Invalid fake ciphertext"))
+        }
+    }
+    
+    override suspend fun getKeyMetadata(keyAlias: String): Result<KeyMetadata?> {
+        return Result.success(null)
     }
 }

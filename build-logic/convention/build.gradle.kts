@@ -14,7 +14,7 @@ dependencies {
     compileOnly(libs.compile.gradle.plugins.ksp)
     compileOnly(libs.compile.gradle.plugins.mokkery)
     implementation(libs.detekt.gradle.plugin)
-    compileOnly(libs.compile.gradle.plugins.skie)
+    implementation(libs.compile.gradle.plugins.skie)
     compileOnly(files(gradle.serviceOf<DependenciesAccessors>().classes.asFiles))
 }
 

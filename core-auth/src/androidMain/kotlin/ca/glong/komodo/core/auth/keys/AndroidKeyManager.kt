@@ -21,7 +21,7 @@ import java.security.Signature
 import java.security.spec.ECGenParameterSpec
 
 class AndroidKeyManager(
-    private val envelopeEncryption: AndroidEnvelopeEncryption,
+    private val envelopeEncryption: EnvelopeEncryption,
     private val secureStorage: AndroidSecureStorage,
     @Suppress("unused") private val context: Context
 ) : KeyManager {
