@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            val moduleName = project.displayName
+            val moduleName = project.name.replace("-", "_")
             with(pluginManager) {
                 alias(libs.plugins.android.kotlin.multiplatform.library)
             }
