@@ -1111,7 +1111,7 @@ Wave 6 (Final):
 
 ### Phase 6: Integration & Cleanup
 
-- [ ] 16. **Register All Components in Koin Module**
+- [x] 16. **Register All Components in Koin Module**
 
   **What to do**:
   - Create new `CoreAuthModule.kt` in `core-auth/src/commonMain/kotlin/ca/glong/komodo/core/auth/di/`

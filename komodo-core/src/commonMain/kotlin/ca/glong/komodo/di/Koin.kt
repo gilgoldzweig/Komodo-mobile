@@ -1,5 +1,6 @@
 package ca.glong.komodo.di
 
+import ca.glong.komodo.core.auth.di.coreAuthModule
 import ca.glong.komodo.feature.alerts.navigation.AlertsModule
 import ca.glong.komodo.feature.auth.navigation.AuthModule
 import ca.glong.komodo.feature.dashboard.navigation.DashboardModule
@@ -28,9 +29,7 @@ object KomodoKoinApp
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
     startKoin<KomodoKoinApp>() {
+        modules(coreAuthModule)
         appDeclaration()
     }
-//    KoinApp. {
-//        appDeclaration()
-//    }
 }

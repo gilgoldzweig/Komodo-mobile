@@ -800,3 +800,96 @@ All tests PASSED
 - All 15 TokenRepository tests pass on Android and iOS
 - Build successful: `./gradlew :core-auth:assemble` ✅
 - Pre-existing test failures in AndroidKeyManager/AndroidEnvelopeEncryption (not related to this task)
+
+---
+
+## [2026-02-05T21:15:00Z] Task 16: Register All Components in Koin Module
+
+### Summary
+Successfully implemented `CoreAuthModule.kt` with proper Koin DI registration for all core-auth components using the expect/actual pattern for platform-specific implementations.
+
+### Implementation Approach
+
+**Common Module Pattern:**
+- Created `coreAuthModule` as a standard Koin `module` in `commonMain`
+- Used `expect` functions (not `Module.extension` functions) for platform factories
+- Registered all SingleTon instances with explicit type parameters: `single<EnvelopeEncryption>`, etc.
+- Platform-specific factory functions called within the module context
+
+**Android Implementation:**
+- `platformCreateEnvelopeEncryption()` returns `AndroidEnvelopeEncryption()` directly
+- `platformCreateSecureStorage()` retrieves Context from Koin global context and creates DataStore
+- `platformCreateKeyManager()` assembles dependencies with type casting
+- Uses `org.koin.core.context.GlobalContext.get()` to access Koin instance during factory execution
+
+**iOS Implementation:**
+- All three platform factories are stubs with `TODO()` - to be completed in Tasks 6, 8, 10
+- Proper imports and function signatures ensure smooth transition when implementations are ready
+
+**Module Registration:**
+- Added `coreAuthModule` to `Koin.kt` via `modules(coreAuthModule)` in `initKoin()` function
+- Integrated into existing Koin setup without modifying `@KoinApplication` annotation
+- Ensures DI is available before app initialization
+
+### Key Learnings
+
+1. **Expect/Actual Factories**: 
+   - Avoid Module extension functions for expect/actual - use top-level functions instead
+   - Cleaner, easier to mock, and avoids scope resolution issues
+   - Top-level functions are simpler to test and reason about
+
+2. **Platform Context Access**:
+   - During DI setup, `GlobalContext.get()` allows retrieving Koin instance
+   - Avoid holding references to Context outside of factory execution
+   - Lazy initialization via Koin solves bootstrapping chicken-egg problem
+
+3. **Module Registration Order**:
+   - `modules(coreAuthModule)` in `initKoin()` works because it's called AFTER `@KoinApplication` initialization
+   - Regular modules (not Koin module classes) can be added dynamically at init time
+   - This pattern enables gradual feature module integration
+
+4. **Import Paths**:
+   - `EnvelopeEncryption` is in `core.auth.keys` package (not `encryption`)
+   - `KeyManager` is in `core.auth.keys` package
+   - Consistent package naming across interfaces and implementations
+
+### Files Created/Modified
+
+**Created:**
+- `core-auth/src/commonMain/kotlin/.../di/CoreAuthModule.kt` - Main Koin module
+- `core-auth/src/androidMain/kotlin/.../di/CoreAuthModule.android.kt` - Android factories
+- `core-auth/src/iosMain/kotlin/.../di/CoreAuthModule.ios.kt` - iOS stubs
+
+**Modified:**
+- `komodo-core/src/commonMain/kotlin/.../di/Koin.kt` - Added coreAuthModule registration
+
+### Build Verification
+
+✅ `./gradlew :core-auth:assemble` - SUCCESSFUL
+✅ `./gradlew :komodo-core:assembleAndroidMain` - SUCCESSFUL
+✅ No circular dependencies detected
+✅ No compilation errors in Android target
+✅ iOS stubs properly registered for future implementation
+
+### Architectural Notes
+
+**DI Dependency Graph:**
+```
+MasterKeyRepository → SecureStorage
+TokenRepository → SecureStorage
+SecureStorage ← AndroidSecureStorage (Android) / TODO (iOS)
+KeyManager ← AndroidKeyManager (Android) / TODO (iOS)
+EnvelopeEncryption ← AndroidEnvelopeEncryption (Android) / TODO (iOS)
+```
+
+**No Circular Dependencies:**
+- Repositories depend on interfaces only
+- Implementations don't depend on repositories
+- Platform-specific classes have no cross-platform dependencies
+
+### Next Steps for iOS (Tasks 6, 8, 10)
+1. Implement `IosEnvelopeEncryption` (Task 6)
+2. Implement `IosSecureStorage` (Task 8)
+3. Implement `IosKeyManager` (Task 10)
+4. Update `CoreAuthModule.ios.kt` factory functions to return actual implementations
+
