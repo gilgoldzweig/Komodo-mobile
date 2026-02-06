@@ -88,7 +88,7 @@ class IosKeyManager : KeyManager {
         }
     }
 
-    override suspend fun generateKeyPair(alias: String): Result<Unit> = runCatching {
+    override suspend fun generateKeyPair(alias: String, type: KeyType): Result<Unit> = runCatching {
         memScoped {
             val attributes = createKeyAttributes(alias) 
                 ?: throw AuthError.KeyError.GenerationFailed("Failed to create key attributes")
@@ -398,6 +398,22 @@ class IosKeyManager : KeyManager {
             } finally {
                 if (tagRef != null) CFRelease(tagRef)
             }
+        }
+    }
+    
+    override suspend fun exportSshKey(alias: String): Result<String> = runCatching {
+        val publicKeyBytes = getPublicKey(alias).getOrThrow()
+            ?: throw AuthError.KeyError.LoadFailed("Key not found for alias: $alias")
+        
+        memScoped {
+            val dataPtr = allocArray<ByteVar>(publicKeyBytes.size)
+            for (i in publicKeyBytes.indices) {
+                dataPtr[i] = publicKeyBytes[i]
+            }
+            val nsData = NSData.create(bytes = dataPtr, length = publicKeyBytes.size.toULong())
+            val base64String = nsData.base64EncodedStringWithOptions(0uL)
+            
+            "ssh-ec $base64String ios-secureenclave-$alias"
         }
     }
 }

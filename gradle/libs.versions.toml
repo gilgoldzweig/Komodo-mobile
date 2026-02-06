@@ -43,6 +43,7 @@ serialization = "1.10.0"
 settings = "1.2.0"
 datastore = "1.2.0"
 androidx-security-crypto = "1.1.0"
+tink = "1.15.0"
 composeHotReload = "1.1.0-alpha04"
 kcrypt = "0.0.15"
 cryptography = "0.5.0"
@@ -73,6 +74,7 @@ androidx-lifecycle-runtime = { module = "org.jetbrains.androidx.lifecycle:lifecy
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-ktx" }
 
 androidx-security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "androidx-security-crypto" }
+tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 kcrypt = { module = "io.github.abhriyaroy:KCrypt", version.ref = "kcrypt" }

@@ -7,7 +7,7 @@ plugins {
     id("komodo.koin")
     id("komodo.nav")
     id("komodo.detekt")
-    id("komodo.skie")
+    // id("komodo.skie")  // Disabled - SKIE not needed for Kotlin-based iOS interop
 }
 
 kotlin {

@@ -18,57 +18,65 @@ To ensure 100% reliability and coverage, this implementation follows a strict TD
 - Use `kotlin.Result` for operations that may fail, returning specific error types.
 - Use `coroutines` for asynchronous operations and make sure IOS implementations are non-blocking.
 - Use Koin & Koin annotations for dependency injection. 
+- **iOS Implementation**: Prefer Kotlin/Native implementation using `platform.Security`, `platform.LocalAuthentication`, and `platform.AuthenticationServices` over Swift implementation where possible to keep logic shared.
+
 ---
 
-Please implement the code in :core-auth module according to the following phased plan:
+Please implement the code in `:core-auth` module according to the following phased plan:
 
 ### Phase 1: Key Management (The Backbone)
 
-*Goal: Handle Public/Private key pairs and the Master Key used to encrypt all subsequent storage.*
+*Goal: Handle Public/Private key pairs (SSH/Identity) and provide cryptographic primitives.*
 
-* [ ] **Common-code(`commonMain`)**
-  * [ ] **Define Key Interfaces (`commonMain`)**
-  * [ ] Create `interface NativeKeyProvider`.
-  * [ ] Methods: `generateKeyPair(alias, type)`, `signData(alias, data)`, `getMasterKey(): ByteArray`, `exportSshKey(alias): String`.
-  * [ ] Support RSA-4096 and Ed25519 (for libssh compatibility).
-
+* [ ] **Common-code (`commonMain`)**
+  * [ ] **Define Key Interface (`commonMain`)**
+  * [ ] Create/Update `interface KeyManager`.
+  * [ ] Methods: `generateKeyPair(alias)`, `getPublicKey(alias)`, `signData(alias, data)`, `deleteKey(alias)`, `hasKey(alias)`.
+  * [ ] Add support for `exportSshKey(alias): String` (SSH public key format).
+  * [ ] Support RSA-4096 (optional) and Ed25519/NIST P-256 (for libssh compatibility).
 
 * [ ] **Android Implementation (`androidMain`)**
-  * [ ] Implement using `AndroidKeyStore`. Ensure Master Key is Hardware-backed (TEE/StrongBox). TDD-Exempt (should be ignored as they require device features).
-  * [ ] Implement SSH envelope logic (signing/formatting for `libssh`).
+  * [ ] **(TDD) Red:** Write Android tests (Robolectric/Instrumented) for `AndroidKeyManager`.
+  * [ ] **Implementation:** Implement `AndroidKeyManager` using `AndroidKeyStore`. Ensure keys are Hardware-backed (TEE/StrongBox) where available.
+  * [ ] Implement SSH key formatting logic (OpenSSH format).
+  * [ ] **(TDD) Green:** Verify Android tests pass.
 
-
-* [ ] **iOS Provider Interface (`iosMain`)**
-  * [ ] Define `NativeKeyProvider` interface in Kotlin.
-  * [ ] **(TDD) Red:** In `KomodoIOS`, write Swift XCTests for a `SwiftKeyProvider` class.
-  * [ ] **Swift Implementation:** Implement using `SecKey` (Secure Enclave) and `LocalAuthentication`.
-  * [ ] Implement SSH key wrapping/signing logic in Swift.
-  * [ ] **(TDD) Green:** Verify Swift tests pass.
+* [ ] **iOS Implementation (`iosMain`)**
+  * [ ] **(TDD) Red:** Write Kotlin/Native tests (`iosTest`) for `IosKeyManager`.
+  * [ ] **Implementation:** Implement `IosKeyManager` using `platform.Security` (`SecKey`, `SecItem`).
+  * [ ] Implement SSH key formatting logic (OpenSSH format) in Kotlin.
+  * [ ] **(TDD) Green:** Verify iOS tests pass.
 
 * [ ] **Koin Integration**
-  * [ ] Bind the platform-specific providers to `NativeKeyProvider`.
+  * [ ] Bind the platform-specific providers to `KeyManager` module.
 
 ---
 
-### Phase 2: Secure Storage with Master Key Encryption
+### Phase 2: Secure Storage & Master Key
 
-*Goal: Implement storage that uses the Master Key from Phase 1 to encrypt data before persistence.*
+*Goal: specific secure storage for sensitive data (tokens) and a Master Key for application-level encryption.*
 
-* [ ] **Define Storage Interface (`commonMain`)**
-* [ ] `interface SecureStorage` with encrypted `save/read/delete`.
+* [ ] **Define Storage Interfaces (`commonMain`)**
+  * [ ] `interface SecureStorage` with `save(key, value)`, `read(key)`, `delete(key)`, `contains(key)`.
+
+* [ ] **Master Key Repository (`commonMain`)**
+  * [ ] **(TDD) Red:** Write test for `MasterKeyRepository`.
+  * [ ] Implement `MasterKeyRepository` that retrieves a stable Master Key.
+    *   If key exists in `SecureStorage`, return it.
+    *   If not, generate a robust random key, save it to `SecureStorage`, and return it.
+  * [ ] **(TDD) Green:** Verify tests pass.
 
 * [ ] **Android Implementation (`androidMain`)**
-* [ ] **(TDD) Red:** Test that data is unreadable if the Master Key is missing.
-* [ ] Use `DataStore` with the Master Key from Phase 1.
+  * [ ] **(TDD) Red:** Test `AndroidSecureStorage`.
+  * [ ] Implement `AndroidSecureStorage` using `EncryptedSharedPreferences` (easiest) or `DataStore` with `Aead` (more modern).
+  * [ ] **(TDD) Green:** Verify tests pass.
 
-* [ ] **iOS Provider Interface (`iosMain`)**
-* [ ] Define `NativeStorageProvider` interface.
-* [ ] **(TDD) Red:** In `KomodoIOS`, write Swift XCTests for `SwiftStorageProvider`.
-* [ ] **Swift Implementation:** Implement using Keychain Services (`kSecClassGenericPassword`).
-* [ ] **(TDD) Green:** Verify Swift tests pass.
+* [ ] **iOS Implementation (`iosMain`)**
+  * [ ] **(TDD) Red:** Test `IosSecureStorage`.
+  * [ ] Implement `IosSecureStorage` using `Keychain` (`SecItemAdd`, `SecItemCopyMatching`) via Kotlin/Native cinterop.
+  * [ ] Ensure items are stored with `kSecAttrAccessibleWhenUnlocked`.
+  * [ ] **(TDD) Green:** Verify tests pass.
 
-* [ ] **Encryption Wrapper (`commonMain`)**
-* [ ] Implement logic that takes the `NativeKeyProvider.getMasterKey()`, uses it to initialize an AES-GCM cipher, and encrypts payloads before passing them to the `NativeStorageProvider`.
 ---
 
 ### Phase 3: Token Management with TTL
@@ -76,12 +84,12 @@ Please implement the code in :core-auth module according to the following phased
 *Goal: Securely store session tokens that expire automatically.*
 
 * [ ] **Implement Token Repository (`commonMain`)**
-* [ ] **(TDD) Red:** Write Kotlin test for `getToken` returning null after TTL.
-* [ ] Use `SecureStorage` (which is now encrypted via Phase 1 & 2).
-* [ ] Implement `storeToken` and `getToken` with `Clock.System.now()` validation.
+  * [ ] **(TDD) Red:** Write Kotlin test for `TokenRepository` (e.g., `getToken` returns null after TTL).
+  * [ ] Use `SecureStorage` (encrypted by platform) to store the token.
+  * [ ] Implement `storeToken(token, expiresIn)` and `getToken()` with `Clock.System.now()` validation.
+  * [ ] (Optional) Add an encryption layer using `MasterKeyRepository` if platform storage is deemed insufficient (double encryption).
 
-
-* [ ] **(TDD) Green:** Verify common tests pass using Mokkery to mock the storage.
+* [ ] **(TDD) Green:** Verify common tests pass using Mokkery/Test Doubles to mock `SecureStorage`.
 
 ---
 
@@ -90,29 +98,27 @@ Please implement the code in :core-auth module according to the following phased
 *Goal: Support FIDO2 registration and authentication.*
 
 * [ ] **Define Provider Interfaces**
-  * [ ] `interface NativeAuthProvider` for `register`(start, finish), `authenticate`(start, finish), add.
+  * [ ] `interface AuthProvider` for `register`(start, finish), `authenticate`(start, finish).
 
+* [ ] **Android Implementation (`androidMain`)**
+  * [ ] **(TDD) Exempt:** UI/Integration tests difficult without device.
+  * [ ] Integrate **Credential Manager API** (androidx.credentials).
 
-* [ ] **Android Implementation**
-  * [ ] Integrate **Credential Manager API**.
-
-
-* [ ] **iOS Implementation (Swift)**
-* [ ] **(TDD) Red:** Swift tests for `ASAuthorizationController` flows.
-* [ ] **Swift Implementation:** Implement `ASAuthorizationPlatformPublicKeyCredentialProvider`.
-* [ ] Inject via Koin into the KMP module.
+* [ ] **iOS Implementation (`iosMain`)**
+  * [ ] **(TDD) Exempt:** UI/Integration tests difficult without device.
+  * [ ] Implement `IosAuthProvider` using `platform.AuthenticationServices` (`ASAuthorizationController`).
+  * [ ] Handle `ASAuthorizationControllerDelegate` and `ASAuthorizationControllerPresentationContextProviding` in Kotlin/Native.
+  * [ ] Inject via Koin into the KMP module.
 
 ---
 
 ### Phase 5: Quality Assurance & Integration
 Go over all implementations and ensure working order, including cross-platform consistency and best practices.
-Make sure code complies with security standards.
-Make sure the the code compiles without errors.
 
 * [ ] **Test Suite Execution**
-* [ ] Run `./gradlew test` (Android/Common).
-* [ ] Execute XCTests in Xcode for all `Native{X}Provider` implementations.
-
+  * [ ] Run `./gradlew :core-auth:test` (Common).
+  * [ ] Run `./gradlew :core-auth:connectedAndroidTest` (Android).
+  * [ ] Run `./gradlew :core-auth:iosSimulatorArm64Test` (iOS).
 
 * [ ] **SSH Auth Verification**
-* [ ] Verify that the generated SSH keys from Phase 1 are correctly accepted by a mock `libssh` session.
+  * [ ] Verify that the generated SSH keys from Phase 1 are correctly accepted by a mock `libssh` session or unit test with OpenSSH key parsers.

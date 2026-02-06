@@ -39,7 +39,7 @@ class AndroidKeyManager : KeyManager {
         KeyGenerator.getInstance(KEY_ALGORITHM_AES, provider)
     }
 
-    override suspend fun generateKeyPair(alias: String): Result<Unit> = runCatching {
+    override suspend fun generateKeyPair(alias: String, type: KeyType): Result<Unit> = runCatching {
         if (!keyStore.containsAlias(alias)) {
             val keyPairGenerator = KeyPairGenerator.getInstance(
                 KeyProperties.KEY_ALGORITHM_EC,
@@ -67,7 +67,7 @@ class AndroidKeyManager : KeyManager {
 
     override suspend fun signData(alias: String, data: ByteArray): Result<ByteArray> = runCatching {
         val entry = keyStore.getEntry(alias, null) as? KeyStore.PrivateKeyEntry
-            ?: throw AuthError.KeyStoreError("Key not found for alias: $alias")
+            ?: throw AuthError.KeyError.LoadFailed("Key not found for alias: $alias")
 
         val signature = Signature.getInstance("SHA256withECDSA")
         signature.initSign(entry.privateKey)
@@ -81,6 +81,17 @@ class AndroidKeyManager : KeyManager {
 
     override suspend fun hasKey(alias: String): Result<Boolean> = runCatching {
         keyStore.containsAlias(alias)
+    }
+    
+    override suspend fun exportSshKey(alias: String): Result<String> = runCatching {
+        val entry = keyStore.getEntry(alias, null) as? KeyStore.PrivateKeyEntry
+            ?: throw AuthError.KeyError.LoadFailed("Key not found for alias: $alias")
+        
+        val publicKey = entry.certificate.publicKey
+        val encoded = publicKey.encoded
+        
+        val base64 = android.util.Base64.encodeToString(encoded, android.util.Base64.NO_WRAP)
+        "ssh-ec $base64 android-keystore-$alias"
     }
 
     suspend fun encryptData(

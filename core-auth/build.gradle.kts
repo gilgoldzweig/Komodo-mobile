@@ -22,6 +22,7 @@ kotlin {
             // Android Security/Crypto for EncryptedDataStore
             implementation(libs.androidx.security.crypto.ktx)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.tink.android)
         }
 
         commonTest.dependencies {
