@@ -28,6 +28,7 @@ include(":androidApp")
 include(":core-domain")
 include(":core-network")
 include(":core-auth")
+include(":core-db")
 
 // Feature: Auth
 include(":feature-auth-api")
