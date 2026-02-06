@@ -999,7 +999,7 @@ Wave 6 (Final):
 
 ### Phase 5: Passkeys
 
-- [ ] 14. **Implement Android Passkeys (Credential Manager)**
+- [x] 14. **Implement Android Passkeys (Credential Manager)**
 
   **What to do**:
   - **(TDD Exempt)**: Device/UI required for full testing
@@ -1223,7 +1223,7 @@ Wave 6 (Final):
 
 ---
 
-- [ ] 18. **Cleanup: Delete Old Implementations**
+- [x] 18. **Cleanup: Delete Old Implementations** (N/A - no old implementations, all greenfield)
 
   **What to do**:
   - Delete old files after verifying new implementations work:
