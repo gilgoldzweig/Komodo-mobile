@@ -99,3 +99,27 @@ _This file tracks active blockers that need resolution._
 - Move tests to `androidTest` sourceset (requires instrumented testing)
 - Or accept that crypto code needs device testing
 - Focus on tasks that can be unit tested (CommonMain repositories)
+
+## [2026-02-05] Task 17 - Integration Test Blocker
+
+**Issue**: Cannot complete full integration tests in unit test environment
+
+**Reason**: 
+- AndroidKeyManager tests fail in Robolectric (AndroidKeyStore not available)
+- Integration tests requiring key generation/signing will also fail
+- iOS implementations (Tasks 6, 8, 10, 15) not yet implemented
+
+**Current Test Coverage**:
+✅ AndroidSecureStorage: 15 tests passing
+✅ MasterKeyRepository: 9 tests passing
+✅ TokenRepository: 15 tests passing
+❌ AndroidKeyManager: Tests fail (Robolectric limitation)
+❌ AndroidPasskeyProvider: No tests (TDD exempt per plan)
+
+**Options for Task 17**:
+1. Write integration tests that only cover storage/repository layers (exclude key operations)
+2. Create instrumented tests (androidTest) requiring device/emulator
+3. Mark Task 17 as pending instrumented test environment
+4. Accept that crypto operations require device testing
+
+**Decision**: Task 17 requires instrumented test setup. Mark as blocked pending device testing infrastructure.
