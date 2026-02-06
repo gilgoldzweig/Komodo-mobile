@@ -5,4 +5,7 @@ interface SecureStorage {
     suspend fun read(key: String): Result<String?>
     suspend fun delete(key: String): Result<Unit>
     suspend fun contains(key: String): Result<Boolean>
+    suspend fun clear(): Result<Unit>
+    suspend fun getVersion(): Result<Int>
+    suspend fun setVersion(version: Int): Result<Unit>
 }

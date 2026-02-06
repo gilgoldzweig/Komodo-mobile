@@ -52,7 +52,7 @@ class IosSecureStorage : SecureStorage {
     override suspend fun save(key: String, value: String): Result<Unit> = runCatching {
         val nsValue = NSString.create(string = value)
         val data = nsValue.dataUsingEncoding(NSUTF8StringEncoding)
-            ?: throw AuthError.StorageError("Failed to encode value")
+            ?: throw AuthError.StorageError.WriteFailed(key)
 
         memScoped {
             val nsKey = NSString.create(string = key)
@@ -135,14 +135,14 @@ class IosSecureStorage : SecureStorage {
                         try {
                             val updateStatus = SecItemUpdate(updateQuery, attributesToUpdate)
                             if (updateStatus != errSecSuccess) {
-                                throw AuthError.StorageError("Failed to update existing item: $updateStatus")
+                                throw AuthError.StorageError.WriteFailed(key)
                             }
                         } finally {
                              if (updateQuery != null) CFRelease(updateQuery)
                              if (attributesToUpdate != null) CFRelease(attributesToUpdate)
                         }
                     } else if (status != errSecSuccess) {
-                        throw AuthError.StorageError("Failed to save item: $status")
+                        throw AuthError.StorageError.WriteFailed(key)
                     }
                 } finally {
                     if (query != null) CFRelease(query)
@@ -207,7 +207,7 @@ class IosSecureStorage : SecureStorage {
                             }
                         }
                         errSecItemNotFound -> null
-                        else -> throw AuthError.StorageError("Failed to read item: $status")
+                        else -> throw AuthError.StorageError.ReadFailed(key)
                     }
                 } finally {
                      if (query != null) CFRelease(query)
@@ -252,7 +252,7 @@ class IosSecureStorage : SecureStorage {
                 try {
                     val status = SecItemDelete(query)
                     if (status != errSecSuccess && status != errSecItemNotFound) {
-                        throw AuthError.StorageError("Failed to delete item: $status")
+                        throw AuthError.StorageError.WriteFailed(key)
                     }
                 } finally {
                     if (query != null) CFRelease(query)
@@ -310,4 +310,50 @@ class IosSecureStorage : SecureStorage {
             }
         }
     }
+
+    override suspend fun clear(): Result<Unit> = runCatching {
+        memScoped {
+            val nsServiceName = NSString.create(string = serviceName)
+            val serviceNameRef = CFBridgingRetain(nsServiceName)
+            
+            try {
+                val keys = allocArray<CFTypeRefVar>(2)
+                val values = allocArray<CFTypeRefVar>(2)
+
+                keys[0] = kSecClass?.reinterpret()
+                values[0] = kSecClassGenericPassword?.reinterpret()
+
+                keys[1] = kSecAttrService?.reinterpret()
+                values[1] = serviceNameRef?.reinterpret()
+
+                val query = CFDictionaryCreate(
+                    kCFAllocatorDefault,
+                    keys,
+                    values,
+                    2,
+                    kCFTypeDictionaryKeyCallBacks.ptr,
+                    kCFTypeDictionaryValueCallBacks.ptr
+                )
+                
+                try {
+                    val status = SecItemDelete(query)
+                    if (status != errSecSuccess && status != errSecItemNotFound) {
+                        throw AuthError.StorageError.Unavailable("Failed to clear storage: error code $status")
+                    }
+                } finally {
+                    if (query != null) CFRelease(query)
+                }
+            } finally {
+                if (serviceNameRef != null) CFRelease(serviceNameRef)
+            }
+        }
+    }
+
+    override suspend fun getVersion(): Result<Int> = runCatching {
+        val versionString = read("__storage_version__").getOrNull() ?: return Result.success(0)
+        versionString.toIntOrNull() ?: 0
+    }
+
+    override suspend fun setVersion(version: Int): Result<Unit> = 
+        save("__storage_version__", version.toString())
 }

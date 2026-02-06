@@ -91,7 +91,7 @@ class IosKeyManager : KeyManager {
     override suspend fun generateKeyPair(alias: String): Result<Unit> = runCatching {
         memScoped {
             val attributes = createKeyAttributes(alias) 
-                ?: throw AuthError.KeyStoreError("Failed to create key attributes")
+                ?: throw AuthError.KeyError.GenerationFailed("Failed to create key attributes")
             
             try {
                 val error = alloc<CFErrorRefVar>()
@@ -105,7 +105,7 @@ class IosKeyManager : KeyManager {
                     } else {
                         "Unknown error"
                     }
-                     throw AuthError.KeyStoreError("Failed to generate key pair: $errorDesc")
+                     throw AuthError.KeyError.GenerationFailed(errorDesc)
                 }
                 
                 CFRelease(privateKey)
@@ -262,12 +262,12 @@ class IosKeyManager : KeyManager {
                     val status = SecItemCopyMatching(query, result.ptr)
                     
                     if (status != errSecSuccess) {
-                        throw AuthError.KeyStoreError("Key not found for signing")
+                        throw AuthError.KeyError.LoadFailed(alias)
                     }
                     
                     val resultValue = result.value
                     val secKey = resultValue as? SecKeyRef
-                        ?: throw AuthError.KeyStoreError("Failed to retrieve private key ref")
+                        ?: throw AuthError.KeyError.LoadFailed(alias)
                         
                     try {
                         val error = alloc<CFErrorRefVar>()
@@ -286,11 +286,11 @@ class IosKeyManager : KeyManager {
                              } else {
                                  "Unknown error"
                              }
-                             throw AuthError.KeyStoreError("Signing failed: $errorDesc")
+                             throw AuthError.KeyError.GenerationFailed(errorDesc)
                         }
                         
                         val signatureData = CFBridgingRelease(signature) as? NSData
-                            ?: throw AuthError.KeyStoreError("Failed to bridge signature data")
+                            ?: throw AuthError.KeyError.GenerationFailed("Failed to bridge signature data")
                             
                         val length = signatureData.length.toInt()
                         val bytes = ByteArray(length)
@@ -346,7 +346,7 @@ class IosKeyManager : KeyManager {
                 try {
                     val status = SecItemDelete(query)
                     if (status != errSecSuccess && status != errSecItemNotFound) {
-                        throw AuthError.KeyStoreError("Failed to delete key: $status")
+                        throw AuthError.KeyError.LoadFailed(alias)
                     }
                 } finally {
                     if (query != null) CFRelease(query)
