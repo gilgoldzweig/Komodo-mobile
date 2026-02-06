@@ -1,6 +1,8 @@
 *.iml
 .kotlin
 .gradle
+**/.gradle
+.kotlin
 **/build/
 xcuserdata
 !src/**/build/
@@ -17,3 +19,10 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
+AGENTS.md
+**/AGENTS.md
+.opencode
+.octto
+.plans
+.sisyphus/
+docs
