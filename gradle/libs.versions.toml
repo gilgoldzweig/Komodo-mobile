@@ -11,10 +11,13 @@ androidx-lifecycle = "2.10.0-alpha08"
 androidx-lifecycle-ktx = "2.10.0"
 androidx-testExt = "1.3.0"
 composeMultiplatform = "1.10.0"
+core = "1.7.0"
 junit = "4.13.2"
 kotlin = "2.3.0"
 kotlin-logging = "7.0.14"
 material3 = "1.11.0-alpha02"
+robolectric = "4.16.1"
+skie = "0.10.9"
 slf4j = "2.0.17"
 turbine = "1.2.1"
 ksp = "2.3.5"
@@ -50,9 +53,11 @@ junitVersion = "4.12"
 
 [libraries]
 
+androidx-core = { module = "androidx.test:core", version.ref = "core" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-annotations = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
 
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -139,13 +144,8 @@ compile-gradle-plugins-compose = { module = "org.jetbrains.compose:org.jetbrains
 compile-gradle-plugins-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 compile-gradle-plugins-ksp = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 compile-gradle-plugins-mokkery = { module = "dev.mokkery:mokkery-gradle", version.ref = "mokkery" }
-compile-gradle-plugins-metro = { module = "dev.zacsweers.metro:gradle-plugin", version.ref = "metro" }
-#compile-gradle-plugins-koin = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-plugin" }
+compile-gradle-plugins-skie = { module = "co.touchlab.skie:co.touchlab.skie.gradle.plugin", version.ref = "skie" }
 
-
-# Metro
-metro-viewmodel = { module = "dev.zacsweers.metro:metrox-viewmodel", version.ref = "metro" }
-metro-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 
 # Detekt
 detekt-api = { module = "dev.detekt:detekt-api", version.ref = "detekt" }
@@ -154,7 +154,6 @@ detekt-formatting = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version
 detekt-compose = { module = "ru.kode:detekt-rules-compose", version.ref = "detekt-compose-rules" }
 detekt-gradle-plugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 detekt-compiler-plugin = { module = "dev.detekt:detekt-compiler-plugin", version.ref = "detekt" }
-junit-junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 
 [plugins]
 cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
@@ -172,6 +171,8 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 detekt = { id = "dev.detekt", version.ref = "detekt" }
 detektCompilerPlugin = { id = "dev.detekt.gradle.compiler-plugin", version.ref = "detekt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }
+
 
 [bundles]
 compose = [

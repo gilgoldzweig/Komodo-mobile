@@ -7,6 +7,7 @@ plugins {
     id("komodo.koin")
     id("komodo.nav")
     id("komodo.detekt")
+    id("komodo.skie")
 }
 
 kotlin {
@@ -36,7 +37,7 @@ kotlin {
             // Exported Core modules
             api(projects.coreAuth)
 
-            implementation("org.jetbrains.compose.ui:ui-tooling-preview:1.10.0")
+//            implementation("org.jetbrains.compose.ui:ui-tooling-preview:1.10.0")
             // Ktor
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

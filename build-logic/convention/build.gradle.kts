@@ -13,8 +13,8 @@ dependencies {
     compileOnly(libs.compile.gradle.plugins.kotlin)
     compileOnly(libs.compile.gradle.plugins.ksp)
     compileOnly(libs.compile.gradle.plugins.mokkery)
-    compileOnly(libs.compile.gradle.plugins.metro)
     implementation(libs.detekt.gradle.plugin)
+    compileOnly(libs.compile.gradle.plugins.skie)
     compileOnly(files(gradle.serviceOf<DependenciesAccessors>().classes.asFiles))
 }
 
@@ -40,17 +40,17 @@ gradlePlugin {
             id = "komodo.koin"
             implementationClass = "ca.glong.komodo.KoinConventionPlugin"
         }
-        register("metro") {
-            id = "komodo.metro"
-            implementationClass = "ca.glong.komodo.MetroConventionPlugin"
-        }
-        register("navigation") {
-            id = "komodo.nav"
-            implementationClass = "ca.glong.komodo.NavigationConventionPlugin"
-        }
         register("detekt") {
             id = "komodo.detekt"
             implementationClass = "ca.glong.komodo.DetektConventionPlugin"
+        }
+        register("nav") {
+            id = "komodo.nav"
+            implementationClass = "ca.glong.komodo.NavigationConventionPlugin"
+        }
+        register("skie") {
+            id = "komodo.skie"
+            implementationClass = "ca.glong.komodo.SkieConventionPlugin"
         }
     }
 }

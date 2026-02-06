@@ -4,7 +4,6 @@ plugins {
     id("komodo.compose")
     id("komodo.koin")
     id("komodo.nav")
-    id("komodo.detekt")
 }
 
 kotlin {

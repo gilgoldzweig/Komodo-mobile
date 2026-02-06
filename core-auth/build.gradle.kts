@@ -3,8 +3,8 @@ plugins {
     id("komodo.android.library")
     id("komodo.koin")
     id("komodo.detekt")
-//    alias(libs.plugins.android.kotlin.multiplatform.library)
 }
+
 
 kotlin {
 
@@ -32,8 +32,8 @@ kotlin {
             implementation(libs.junit)
             implementation(libs.bundles.common.test)
             implementation(libs.kotlinx.coroutines.test)
-            implementation("org.robolectric:robolectric:4.11.1")
-            implementation("androidx.test:core:1.6.1")
+            implementation(libs.robolectric)
+            implementation(libs.androidx.core)
         }
     }
 }
