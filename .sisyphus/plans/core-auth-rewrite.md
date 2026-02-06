@@ -933,7 +933,7 @@ Wave 6 (Final):
 
 ---
 
-- [ ] 13. **Implement SSH Public Key Export**
+- [x] 13. **Implement SSH Public Key Export** (implemented in AndroidKeyManager.exportSshKey)
 
   **What to do**:
   - **(TDD) Red**: Write tests for SSH key formatting
@@ -999,7 +999,7 @@ Wave 6 (Final):
 
 ### Phase 5: Passkeys
 
-- [ ] 14. **Implement Android Passkeys (Credential Manager)**
+- [x] 14. **Implement Android Passkeys (Credential Manager)**
 
   **What to do**:
   - **(TDD Exempt)**: Device/UI required for full testing

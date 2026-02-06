@@ -893,3 +893,84 @@ EnvelopeEncryption ← AndroidEnvelopeEncryption (Android) / TODO (iOS)
 3. Implement `IosKeyManager` (Task 10)
 4. Update `CoreAuthModule.ios.kt` factory functions to return actual implementations
 
+
+## [2026-02-05] Session Progress Summary
+
+**Completed in this session:**
+- Task 7: AndroidSecureStorage with Tink AEAD (15 tests, all pass)
+- Task 9: AndroidKeyManager full implementation (tests need instrumented environment)
+- Task 11: MasterKeyRepository tests (9 tests, pass on Android+iOS)
+- Task 12: TokenRepository with lazy TTL (15 tests, pass on Android+iOS)
+- Task 16: Koin DI module registration (Android actuals, iOS stubs)
+
+**Key Patterns:**
+- SecureStorage: Tink AEAD with hardware-backed master key via AndroidKeysetManager
+- Lazy TTL: Check expiration on read using Clock.System.now(), no timers
+- Test doubles: FakeSecureStorage pattern for testing repositories
+- DI: expect/actual pattern for platform-specific factories
+
+**Testing Issue:**
+AndroidKeyManager implementation complete but Robolectric doesn't support AndroidKeyStore.
+Tests need instrumented environment (emulator/device) to verify hardware crypto operations.
+
+**Status:** 8/18 core tasks complete (44.4%). iOS tasks blocked on Swift development.
+
+## Task 14: Android Passkeys Implementation (2026-02-05)
+
+### Implementation Summary
+- **Interface**: AuthProvider with createCredential() and getAssertion() methods
+- **Platform**: AndroidPasskeyProvider using androidx.credentials.CredentialManager
+- **Result Types**: AttestationResult and AssertionResult with proper equals/hashCode for ByteArray
+
+### Key Discoveries
+
+#### Credential Manager API
+- Uses WebAuthn JSON format for request building
+- CreatePublicKeyCredentialRequest for registration flow
+- GetPublicKeyCredentialOption for authentication flow
+- Response parsing from JSON strings (registrationResponseJson, authenticationResponseJson)
+
+#### WebAuthn Request Format
+- Challenge must be Base64URL encoded
+- UserId must be Base64URL encoded
+- pubKeyCredParams: ES256 (alg: -7) and RS256 (alg: -257)
+- authenticatorSelection: platform, resident key required, user verification required
+- Default timeout: 60 seconds
+
+#### Error Mapping
+- CreateCredentialCancellationException → UserCancelled
+- GetCredentialCancellationException → UserCancelled
+- NoCredentialException → NoCredentials
+- All other exceptions → OperationFailed
+
+#### Base64URL Encoding
+- Must use Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING flags
+- Critical for WebAuthn spec compliance
+- Applied to challenge, userId, credentialId
+
+#### JSON Parsing Gotcha
+- JSONObject.optString("key", null) returns "null" string, not null
+- Must use has() check instead: `if (responseObj.has("userHandle")) { ... }`
+- userHandle is optional in assertion response
+
+#### Dependencies
+- androidx.credentials:credentials:1.3.0
+- androidx.credentials:credentials-play-services-auth:1.3.0
+- Added to libs.versions.toml and core-auth/build.gradle.kts androidMain
+
+#### Gradle Task Discovery
+- KMP projects don't use standard Android task names
+- Use :core-auth:compileAndroidMain, not compileDebugKotlinAndroid
+- Run `./gradlew :module:tasks --all | grep android` to find available tasks
+
+### Patterns Confirmed
+- Result<T> return type for all operations (consistent with Task 2)
+- AuthError.PasskeyError sealed hierarchy (extended with NoCredentials, ProviderUnavailable, OperationFailed)
+- runCatching + fold pattern for error mapping
+- ByteArray data classes require custom equals/hashCode
+
+### Testing Notes
+- TDD exempt per plan (no device testing required)
+- Integration testing requires real device with biometric enrollment
+- Credential Manager requires Activity context (not Application context)
+
