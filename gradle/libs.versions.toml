@@ -49,6 +49,9 @@ composeHotReload = "1.1.0-alpha04"
 kcrypt = "0.0.15"
 cryptography = "0.5.0"
 mokkery = "3.1.1"
+sqldelight = "2.2.1"
+sqlcipher-android = "4.6.0"
+androidx-sqlite = "2.4.0"
 
 metro = "0.10.2"
 junitVersion = "4.12"
@@ -143,6 +146,14 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 # DataStore
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
+# SQLDelight
+sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqldelight" }
+sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
+sqlcipher-android = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher-android" }
+androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "androidx-sqlite" }
+
 # Gradle Plugin dependencies
 compile-gradle-plugins-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 compile-gradle-plugins-compose = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "composeMultiplatform" }
@@ -177,6 +188,7 @@ detekt = { id = "dev.detekt", version.ref = "detekt" }
 detektCompilerPlugin = { id = "dev.detekt.gradle.compiler-plugin", version.ref = "detekt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 
 
 [bundles]
