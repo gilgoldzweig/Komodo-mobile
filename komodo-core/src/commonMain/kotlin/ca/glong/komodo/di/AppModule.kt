@@ -3,6 +3,7 @@ package ca.glong.komodo.di
 import ca.glong.komodo.feature.alerts.navigation.AlertsModule
 import ca.glong.komodo.feature.auth.navigation.AuthModule
 import ca.glong.komodo.feature.dashboard.navigation.DashboardModule
+import ca.glong.komodo.feature.passkeytest.navigation.PasskeyTestModule
 import ca.glong.komodo.feature.resources.navigation.ResourcesModule
 import ca.glong.komodo.navigation.CoreNavigationModule
 import ca.glong.komodo.navigation.LauncherKey
@@ -22,6 +23,7 @@ import org.koin.core.annotation.Single
         CoreNavigationModule::class,
         DashboardModule::class,
         MainNavigationModule::class,
+        PasskeyTestModule::class,
         ResourcesModule::class,
     ]
 )

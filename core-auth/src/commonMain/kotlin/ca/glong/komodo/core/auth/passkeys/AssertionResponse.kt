@@ -33,6 +33,7 @@ data class AssertionResponse(
 @Serializable
 data class AssertionObject(
     val clientDataJSON: ByteArray,
+    val authenticatorData: ByteArray,
     val signature: ByteArray,
     val userHandle: ByteArray? = null
 ) {
@@ -41,6 +42,7 @@ data class AssertionObject(
         if (other !is AssertionObject) return false
 
         if (!clientDataJSON.contentEquals(other.clientDataJSON)) return false
+        if (!authenticatorData.contentEquals(other.authenticatorData)) return false
         if (!signature.contentEquals(other.signature)) return false
         if (userHandle != null) {
             if (other.userHandle == null) return false
@@ -52,6 +54,7 @@ data class AssertionObject(
 
     override fun hashCode(): Int {
         var result = clientDataJSON.contentHashCode()
+        result = 31 * result + authenticatorData.contentHashCode()
         result = 31 * result + signature.contentHashCode()
         result = 31 * result + (userHandle?.contentHashCode() ?: 0)
         return result

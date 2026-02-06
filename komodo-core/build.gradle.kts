@@ -33,6 +33,7 @@ kotlin {
             implementation(projects.featureDashboardImpl)
             implementation(projects.featureResourcesImpl)
             implementation(projects.featureAlertsImpl)
+            implementation(projects.featurePasskeyTestImpl)
 
             // Exported Core modules
             api(projects.coreAuth)

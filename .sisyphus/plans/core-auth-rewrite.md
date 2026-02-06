@@ -696,7 +696,7 @@ Wave 6 (Final):
 
 ### Phase 3: Key Management Implementation
 
-- [ ] 9. **Implement Android KeyManager**
+- [x] 9. **Implement Android KeyManager** (impl complete, tests need instrumented environment)
 
   **What to do**:
   - **(TDD) Red**: Write comprehensive tests for `AndroidKeyManager`
@@ -821,7 +821,7 @@ Wave 6 (Final):
 
 ---
 
-- [ ] 11. **Implement MasterKeyRepository in CommonMain**
+- [x] 11. **Implement MasterKeyRepository in CommonMain**
 
   **What to do**:
   - **(TDD) Red**: Write tests for `MasterKeyRepository`

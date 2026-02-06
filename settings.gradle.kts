@@ -44,3 +44,7 @@ include(":feature-resources-impl")
 // Feature: Alerts
 include(":feature-alerts-api")
 include(":feature-alerts-impl")
+
+// Feature: Passkey Test
+include(":feature-passkey-test-api")
+include(":feature-passkey-test-impl")

@@ -5,6 +5,7 @@ import ca.glong.komodo.feature.alerts.api.AlertsKey
 import ca.glong.komodo.feature.auth.api.LoginKey
 import ca.glong.komodo.feature.auth.api.ServerSetupKey
 import ca.glong.komodo.feature.dashboard.api.DashboardKey
+import ca.glong.komodo.feature.passkeytest.api.PasskeyTestKey
 import ca.glong.komodo.feature.resources.api.ResourceDetailKey
 import ca.glong.komodo.feature.resources.api.ResourceListKey
 import ca.glong.komodo.ui.LauncherScreen
@@ -46,6 +47,7 @@ class MainNavigationModule {
             subclass(ServerSetupKey.serializer())
             subclass(DashboardKey.serializer())
             subclass(AlertsKey.serializer())
+            subclass(PasskeyTestKey.serializer())
             subclass(ResourceListKey.serializer())
             subclass(ResourceDetailKey.serializer())
         }

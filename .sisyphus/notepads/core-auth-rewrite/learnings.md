@@ -636,3 +636,123 @@ override suspend fun read(key: String): Result<String?> = runCatching {
 - Task 8: iOS SecureStorage (Keychain + CommonCrypto)
 - Task 9: Android KeyManager (Keystore + key generation)
 - Task 12: TokenRepository (common code, uses SecureStorage)
+
+## [2026-02-06T01:10:00Z] Task 11: MasterKeyRepository Tests - COMPLETE
+
+### Implementation Summary
+Successfully created comprehensive test suite for MasterKeyRepository with 9 test cases covering all functionality paths.
+
+### Test File Created
+- **Location**: `core-auth/src/commonTest/kotlin/ca/glong/komodo/core/auth/keys/MasterKeyRepositoryTest.kt`
+- **Lines**: 175 total
+- **Test Count**: 9 tests
+
+### Test Coverage
+
+**1. Key Generation Tests:**
+- `getMasterKey_generatesNewKeyOnFirstCall()` - Verifies 64-char hex string on first call
+- `getMasterKey_generatesValidHexString()` - Validates hex format (regex: `^[0-9a-f]{64}$`)
+
+**2. Key Caching Tests:**
+- `getMasterKey_returnsExistingKeyOnSubsequentCalls()` - Same key on multiple calls
+- `getMasterKey_multipleCallsGenerateSingleKey()` - 3 calls return identical key
+
+**3. Clear Functionality Tests:**
+- `clearMasterKey_removesKeyFromStorage()` - New key generated after clear
+- `getMasterKey_generatesNewKeyAfterClear()` - Subsequent key differs from pre-clear key
+
+**4. Error Handling Tests:**
+- `getMasterKey_handlesStorageReadFailure()` - Read failures propagate as Result.failure
+- `getMasterKey_handlesSaveFailureAfterGeneration()` - Save failures prevent key storage
+- `clearMasterKey_handlesStorageDeleteFailure()` - Delete failures propagate properly
+
+### Key Implementation Pattern
+
+**FakeSecureStorage Test Double:**
+- Implements SecureStorage interface with configurable failure modes
+- Parameters: `failOnSave`, `failOnRead`, `failOnDelete` (boolean flags)
+- In-memory Map<String, String> for state tracking
+- All methods return Result<T> for proper error handling
+
+**Test Pattern (runTest coroutine scope):**
+```kotlin
+val storage = FakeSecureStorage(failOnSave = true)
+val repository = MasterKeyRepository(storage)
+val result = repository.getMasterKey()
+assertTrue(result.isFailure, "getMasterKey should fail when storage save fails")
+```
+
+### Learnings
+
+1. **Key Size Verification**: Generated key is 32 bytes → 64 hex characters (2 chars per byte)
+   - Implementation uses `Random.nextBytes(32)` correctly
+   - Hex conversion via `toUByte().toString(16).padStart(2, '0')`
+
+2. **Hex String Validation**: Regex pattern `^[0-9a-f]{64}$` catches:
+   - Proper byte-to-hex conversion (lowercase 'a-f')
+   - No uppercase variations
+   - Exactly 64 characters (no padding errors)
+
+3. **Test Double Design**: FakeSecureStorage supports flexible failure scenarios:
+   - Can fail at any operation independently
+   - Useful for testing error propagation paths
+   - Maintains in-memory state for verification
+
+4. **Result.isSuccess/isFailure Pattern**: 
+   - Kotlin Result type provides idiomatic error handling
+   - Tests check both success path (`result.getOrNull()`) and failure path (`result.isFailure`)
+
+5. **Coroutine Testing**: kotlinx-coroutines-test `runTest` suspends properly for suspend functions
+   - No delays or timeouts needed for in-memory operations
+   - Clean, synchronous test execution model
+
+### Build Verification
+
+**iOS Simulator Tests:**
+```
+Test Results: 9 tests, 0 failures, 100% success
+Duration: 0s
+All tests PASSED
+```
+
+**Android Host Tests:**
+```
+Test Results: 9 tests, 0 failures, 100% success
+Duration: 0.028s
+All tests PASSED
+```
+
+### Design Notes
+
+**Why FakeSecureStorage?**
+- Avoids platform-specific storage implementation details
+- Controllable state for testing edge cases
+- Fast in-memory execution (no disk I/O)
+- Pure common code (no androidMain/iosMain coupling)
+
+**Why No Dependency Injection in Test?**
+- MasterKeyRepository takes SecureStorage as constructor param
+- FakeSecureStorage injected directly in each test
+- No need for Koin/DI framework in unit tests
+
+**Storage Key Naming:**
+- MASTER_KEY_ALIAS = "komodo_master_key_v1"
+- Versioned naming enables future key migration
+- Not exposed in public API (private const)
+
+### Task Completion
+
+**Status:** ✅ COMPLETE
+**Verification:**
+- [x] 9 test cases (exceeds 7+ requirement)
+- [x] All functionality paths tested (generate, cache, clear, errors)
+- [x] FakeSecureStorage test double with failure modes
+- [x] Tests pass on iOS Simulator (100%)
+- [x] Tests pass on Android Host (100%)
+- [x] Key validation (64-char hex strings)
+- [x] Error handling tested (read, save, delete failures)
+
+**Test Organization:**
+- FakeSecureStorage class (40 lines) - inline in test file
+- MasterKeyRepositoryTest class (135 lines) - 9 test methods
+

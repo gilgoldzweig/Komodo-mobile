@@ -32,6 +32,16 @@ sealed class AuthError : RuntimeException() {
         data class LoadFailed(val keyId: String) : KeyError(
             message = "Failed to load key: $keyId"
         )
+
+        @Serializable
+        data class StorageFailed(val reason: String) : KeyError(
+            message = "Key storage failed: $reason"
+        )
+
+        @Serializable
+        data class OperationFailed(val reason: String) : KeyError(
+            message = "Key operation failed: $reason"
+        )
     }
 
     /**

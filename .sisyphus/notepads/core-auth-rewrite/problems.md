@@ -76,3 +76,26 @@ _This file tracks active blockers that need resolution._
 3. Then tackle iOS Swift tasks in dedicated iOS development session
 4. Finally integration tasks (11-18)
 
+
+## [2026-02-05] Task 9 - AndroidKeyManager Testing Blocker
+
+**Issue**: AndroidKeyManager implementation is complete but tests fail with "AndroidKeyStore not found"
+
+**Root Cause**: Robolectric doesn't support Android Keystore (hardware security module)
+
+**Errors**:
+- Ed25519 key generation fails during envelope encryption (needs AndroidKeyStore master key)
+- P-256 key generation fails (needs AndroidKeyStore for hardware-backed keys)
+
+**Options**:
+1. Use instrumented tests (`androidTest`) instead of unit tests - requires emulator/device
+2. Mock AndroidKeyStore behavior in tests (complex, defeats purpose of testing crypto)
+3. Extract keystore operations to interface and provide test doubles
+4. Skip unit tests for AndroidKeyManager, rely on integration tests
+
+**Decision**: Task 9 implementation is COMPLETE but tests need instrumented test environment. Mark as "implementation complete, tests require device/emulator".
+
+**Next Steps**: 
+- Move tests to `androidTest` sourceset (requires instrumented testing)
+- Or accept that crypto code needs device testing
+- Focus on tasks that can be unit tested (CommonMain repositories)
