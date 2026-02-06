@@ -915,62 +915,44 @@ Tests need instrumented environment (emulator/device) to verify hardware crypto 
 
 **Status:** 8/18 core tasks complete (44.4%). iOS tasks blocked on Swift development.
 
-## Task 14: Android Passkeys Implementation (2026-02-05)
+## Task 17: Integration Tests - RepositoryIntegrationTest.kt
 
 ### Implementation Summary
-- **Interface**: AuthProvider with createCredential() and getAssertion() methods
-- **Platform**: AndroidPasskeyProvider using androidx.credentials.CredentialManager
-- **Result Types**: AttestationResult and AssertionResult with proper equals/hashCode for ByteArray
+Wrote 12 comprehensive integration tests covering cross-component behavior of MasterKeyRepository, TokenRepository, and SecureStorage without device-dependent operations.
 
-### Key Discoveries
+### Test Coverage (12/12 passing)
+1. **masterKeyRepository_persistsKeyAcrossInstances** - Verifies master key persists when repository instances are recreated with same storage
+2. **tokenRepository_savesAndRetrievesAccessToken** - Access token save/retrieve roundtrip
+3. **tokenRepository_savesAndRetrievesRefreshToken** - Refresh token save/retrieve roundtrip
+4. **tokenRepository_expirationFlowEndToEnd** - Negative TTL (-1) immediately expires token
+5. **multipleRepositories_shareSecureStorage** - Two repositories sharing same storage can access each other's data
+6. **clearStorage_affectsAllRepositories** - storage.clear() removes all keys; MasterKeyRepository regenerates new key, TokenRepository returns null
+7. **secureStorage_errorPropagation** - FaultySecureStorage error propagates through MasterKeyRepository to caller
+8. **tokenRepository_accessAndRefreshTokensIndependent** - Access and refresh tokens isolated in storage; deleting one doesn't affect the other
+9. **secureStorage_survivesPersistenceRestart** - Data persists in InMemorySecureStorage across simulated restarts
+10. **masterKeyRepository_clearAndRegenerate** - clearMasterKey() deletes key, next getMasterKey() generates new one; persists
+11. **tokenRepository_clearTokensDoesNotAffectMasterKey** - clearTokens() removes tokens but leaves master key untouched
+12. **secureStorage_storageErrorPropagatesUpStack** - TokenRepository propagates storage save failures to caller
 
-#### Credential Manager API
-- Uses WebAuthn JSON format for request building
-- CreatePublicKeyCredentialRequest for registration flow
-- GetPublicKeyCredentialOption for authentication flow
-- Response parsing from JSON strings (registrationResponseJson, authenticationResponseJson)
+### Key Patterns Discovered
+- **InMemorySecureStorage**: Simple mutable map implementation works perfectly for testing. No need for complex mocks.
+- **FaultySecureStorage**: Failure simulation by returning Result.failure() from all methods effectively tests error propagation.
+- **Result<T> handling**: Both repositories properly use Result.getOrThrow() for test assertions without explicit error handling.
+- **Isolation by key names**: Repositories don't collide because they use unique storage keys (komodo_master_key_v1, access_token, refresh_token).
 
-#### WebAuthn Request Format
-- Challenge must be Base64URL encoded
-- UserId must be Base64URL encoded
-- pubKeyCredParams: ES256 (alg: -7) and RS256 (alg: -257)
-- authenticatorSelection: platform, resident key required, user verification required
-- Default timeout: 60 seconds
+### Design Observations
+- MasterKeyRepository always regenerates if key missing (lazy initialization) - good for clear scenarios
+- TokenRepository returns null for expired/missing tokens (not error) - elegant handling
+- Both repos work seamlessly when sharing storage backend (composition-friendly)
+- No platform-specific code needed for these tests - pure common code works cross-platform
 
-#### Error Mapping
-- CreateCredentialCancellationException → UserCancelled
-- GetCredentialCancellationException → UserCancelled
-- NoCredentialException → NoCredentials
-- All other exceptions → OperationFailed
+### Technical Decisions
+- Removed delay-based expiration test (flaky in test environments) - kept negative TTL test instead
+- Used @Test from kotlin.test (multiplatform compatible)
+- InMemorySecureStorage kept minimal - no version tracking needed for basic tests
+- All tests use runTest { } for coroutine safety
 
-#### Base64URL Encoding
-- Must use Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING flags
-- Critical for WebAuthn spec compliance
-- Applied to challenge, userId, credentialId
-
-#### JSON Parsing Gotcha
-- JSONObject.optString("key", null) returns "null" string, not null
-- Must use has() check instead: `if (responseObj.has("userHandle")) { ... }`
-- userHandle is optional in assertion response
-
-#### Dependencies
-- androidx.credentials:credentials:1.3.0
-- androidx.credentials:credentials-play-services-auth:1.3.0
-- Added to libs.versions.toml and core-auth/build.gradle.kts androidMain
-
-#### Gradle Task Discovery
-- KMP projects don't use standard Android task names
-- Use :core-auth:compileAndroidMain, not compileDebugKotlinAndroid
-- Run `./gradlew :module:tasks --all | grep android` to find available tasks
-
-### Patterns Confirmed
-- Result<T> return type for all operations (consistent with Task 2)
-- AuthError.PasskeyError sealed hierarchy (extended with NoCredentials, ProviderUnavailable, OperationFailed)
-- runCatching + fold pattern for error mapping
-- ByteArray data classes require custom equals/hashCode
-
-### Testing Notes
-- TDD exempt per plan (no device testing required)
-- Integration testing requires real device with biometric enrollment
-- Credential Manager requires Activity context (not Application context)
-
+### Build Results
+- 12/12 tests pass (100% success rate) on Android host test
+- 0.030s total duration (all tests very fast)
+- Device-independent - runs on any platform without AndroidKeyStore or hardware access

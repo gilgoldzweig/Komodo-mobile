@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@opencode-ai/plugin": "1.1.52"
+    "@opencode-ai/plugin": "1.1.53"
   },
   "devDependencies": {
     "unique-names-generator": "4.7.1",

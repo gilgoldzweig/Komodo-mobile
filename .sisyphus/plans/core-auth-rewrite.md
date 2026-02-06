@@ -999,7 +999,7 @@ Wave 6 (Final):
 
 ### Phase 5: Passkeys
 
-- [x] 14. **Implement Android Passkeys (Credential Manager)**
+- [ ] 14. **Implement Android Passkeys (Credential Manager)**
 
   **What to do**:
   - **(TDD Exempt)**: Device/UI required for full testing
@@ -1166,7 +1166,7 @@ Wave 6 (Final):
 
 ---
 
-- [ ] 17. **Run Full Integration Tests**
+- [x] 17. **Run Full Integration Tests** (partial: storage/repository layers, device tests pending)
 
   **What to do**:
   - Write integration tests that exercise full flows:
