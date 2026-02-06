@@ -756,3 +756,47 @@ All tests PASSED
 - FakeSecureStorage class (40 lines) - inline in test file
 - MasterKeyRepositoryTest class (135 lines) - 9 test methods
 
+
+## Task 12: TokenRepository with Lazy TTL (2026-02-05)
+
+### Implementation
+- **Location**: `core-auth/src/commonMain/kotlin/ca/glong/komodo/core/auth/tokens/TokenRepository.kt`
+- **Pattern**: Lazy TTL enforcement - check expiration only on read, never proactively
+- **Storage Format**: `"{token}|{expiryEpochMillis}"` - simple separator-based serialization
+- **Time Source**: `Clock.System.now().toEpochMilliseconds()` from kotlinx-datetime
+
+### Key Design Decisions
+1. **Expired tokens return `Result.success(null)`** - not an error, just absence of valid token
+2. **Comparison operator**: `>=` not `>` for expiration check (tokens expire AT the timestamp, not after)
+3. **Invalid format handling**: Return null gracefully (treat malformed data as expired/invalid)
+4. **Error propagation**: Storage failures return `Result.failure()`, application logic returns `Result.success(null)`
+
+### Testing Strategy
+- **FakeSecureStorage**: Reused pattern from MasterKeyRepositoryTest (in-memory map with failure injection)
+- **15 tests total**:
+  - Happy path (save/get before expiry)
+  - Expiration scenarios (zero, negative, immediate, far future)
+  - Error handling (storage failures, invalid format)
+  - Edge cases (missing token, malformed data)
+  - Format verification (separator and timestamp encoding)
+
+### Gotcha: Zero Expiry Bug
+**Initial bug**: Using `currentTime > expiryTimestamp` made zero-expiry tokens valid
+**Fix**: Changed to `currentTime >= expiryTimestamp` so tokens expire exactly at timestamp
+**Lesson**: Boundary conditions in time comparisons need careful consideration
+
+### Pattern Highlights
+- **Public API docstrings**: Kept for contract clarity (lazy TTL semantic is critical for callers)
+- **Inline comments**: Removed (code is self-documenting with clear variable names)
+- **Result<T> pattern**: Consistent with SecureStorage interface, clear success/failure distinction
+- **Separation of concerns**: `getToken()` private helper for DRY access/refresh logic
+
+### Dependencies
+- `kotlinx-datetime`: Already present in build.gradle.kts
+- `SecureStorage`: Interface from Task 4
+- No new dependencies needed
+
+### Build Results
+- All 15 TokenRepository tests pass on Android and iOS
+- Build successful: `./gradlew :core-auth:assemble` ✅
+- Pre-existing test failures in AndroidKeyManager/AndroidEnvelopeEncryption (not related to this task)

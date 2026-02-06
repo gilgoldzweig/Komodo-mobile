@@ -877,7 +877,7 @@ Wave 6 (Final):
 
 ### Phase 4: Token & SSH Management
 
-- [ ] 12. **Implement TokenRepository with Lazy TTL**
+- [x] 12. **Implement TokenRepository with Lazy TTL**
 
   **What to do**:
   - **(TDD) Red**: Write tests for `TokenRepository`
