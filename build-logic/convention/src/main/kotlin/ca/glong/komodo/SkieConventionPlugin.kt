@@ -14,9 +14,16 @@ class SkieConventionPlugin : Plugin<Project> {
             }
             if (extensions.findByType<SkieExtension>() != null) {
                 extensions.configure<SkieExtension> {
-                    isEnabled.set(false)
+                    isEnabled.set(true)
                     features {
-                        coroutinesInterop.set(true)
+                        group {
+                            // Enable sealed class → Swift enum conversion
+                            SealedInterfaces.Enabled(true)
+                            // Enable suspend functions → Swift async/await
+                            CoroutinesInterop.Enabled(true)
+                            // Enable Flow → Swift AsyncSequence
+                            FlowInterop.Enabled(true)
+                        }
                     }
                 }
             }

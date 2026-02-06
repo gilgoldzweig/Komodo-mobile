@@ -21,8 +21,10 @@ captures
 node_modules/
 AGENTS.md
 **/AGENTS.md
-.opencode
-.octto
-.plans
-.sisyphus/
-docs
+/.gradle/
+/.idea/
+/.kotlin/
+/.octto/
+/.opencode/
+/.plans/
+/.sisyphus/
